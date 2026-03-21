@@ -292,9 +292,9 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Headers at top */
+    justify-content: flex-start; /* Title/Names at top */
     align-items: center;
-    padding: 5vh 20px 40px;
+    padding: 3vh 20px 40px; /* Reduced to pull higher and clear space on short screens */
     /* Removed translate transform to prevent overlaps */
 }
 
@@ -331,8 +331,8 @@ body {
 .welcome-text {
     font-family: var(--khmer-body-font);
     font-size: 1.3rem;
-    margin-top: auto; /* PUSHES EVERYTHING TO THE BOTTOM */
-    margin-bottom: 10px;
+    margin-top: 5vh; /* Grouped closer to the names at the top */
+    margin-bottom: 5px;
     color: #EDD19C; /* Soft Champagne Gold */
     text-shadow: 1px 1px 3px rgba(60, 30, 0, 0.6);
 }
@@ -340,8 +340,8 @@ body {
 .guest-name {
     font-family: var(--khmer-header-font);
     font-size: 1.4rem;
-    margin-top: 0; 
-    margin-bottom: 180px; /* Space to clear the absolute footer */
+    margin-top: 5px; 
+    margin-bottom: 20px; 
     padding: 12px 35px;
     border-top: 1.5px solid rgba(255, 255, 255, 0.8);
     border-bottom: 1.5px solid rgba(255, 255, 255, 0.8);
@@ -350,6 +350,15 @@ body {
     color: #EDD19C; /* Soft Champagne Gold */
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Shorter Windows Fix */
+@media screen and (max-height: 700px) {
+    .cover-title { font-size: 1.4rem; margin-bottom: 5px; }
+    .cover-names { font-size: 2.2rem; margin-bottom: 5px; }
+    .welcome-text { font-size: 1rem; margin-top: 2vh; }
+    .guest-name { font-size: 1rem; padding: 5px 20px; margin-bottom: 10px; }
+    .cover-date { font-size: 1rem; margin-bottom: 5px; }
 }
 
 .cover-footer {
