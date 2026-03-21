@@ -291,7 +291,7 @@ body {
     flex-direction: column;
     justify-content: flex-start; /* Headers as close to top as possible */
     align-items: center;
-    padding: 13vh 20px 40px; /* Shifted down slightly from 8vh */
+    padding: 5vh 20px 40px; /* Shifted back up toward the top */
     /* Removed translate transform to prevent overlaps */
 }
 
@@ -326,7 +326,7 @@ body {
 .welcome-text {
     font-family: var(--khmer-body-font);
     font-size: 1.3rem;
-    margin-top: 36vh; /* Pulled up slightly from 45vh to stay closer to faces but clear them */
+    margin-top: 30vh; /* Pulled up as requested, while still clearing the face area */
     color: #EDD19C; /* Soft Champagne Gold */
     text-shadow: 1px 1px 3px rgba(60, 30, 0, 0.6);
 }
