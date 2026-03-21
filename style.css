@@ -292,9 +292,9 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Title/Names at top */
+    justify-content: flex-start; /* Headers at top */
     align-items: center;
-    padding: 3vh 20px 40px; /* Reduced to pull higher and clear space on short screens */
+    padding: 8vh 20px 40px; /* Moved down slightly to group with text below */
     /* Removed translate transform to prevent overlaps */
 }
 
@@ -331,7 +331,7 @@ body {
 .welcome-text {
     font-family: var(--khmer-body-font);
     font-size: 1.3rem;
-    margin-top: 5vh; /* Grouped closer to the names at the top */
+    margin-top: 10px; /* Brining it very close as requested */
     margin-bottom: 5px;
     color: #EDD19C; /* Soft Champagne Gold */
     text-shadow: 1px 1px 3px rgba(60, 30, 0, 0.6);
