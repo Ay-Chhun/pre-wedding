@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#fce4ec">
+    <!-- Preload critical background image for faster initial render -->
+    <link rel="preload" as="image" href="assets/cover-bg.jpg">
     <!-- Chrome, Firefox OS and Opera -->
     <meta name="theme-color" content="#fce4ec">
     <!-- Windows Phone -->
@@ -45,7 +47,7 @@
             <p class="welcome-text">សូមគោរពអញ្ញើញ</p>
             <p class="guest-name"></p>
             <div class="cover-footer">
-                <p class="cover-date">ថ្ងៃអាទិត្យ ទី២២ ខែមីនា ឆ្នាំ២០២៦</p>
+                <p class="cover-date">ថ្ងៃសៅរ៍ ទី២៥ ខែមេសា ឆ្នាំ២០២៦</p>
                 <button class="open-invite-btn"
                     onclick="sessionStorage.setItem('inviteOpened','1'); document.getElementById('save-the-date').scrollIntoView({behavior: 'smooth'}); startMusic();">
                     💌 បើកធៀបមក
@@ -61,7 +63,7 @@
     <div id="save-the-date" class="card-container save-date-card">
         <div class="heart-photo-wrapper scroll-animate animate-scale">
             <div class="heart-photo">
-                <img src="assets/CX7_7941.jpg" alt="Groom & Bride Photo">
+                <img src="assets/CX7_7941.jpg" alt="Groom & Bride Photo" loading="lazy">
             </div>
         </div>
         <!-- <p class="save-date-label scroll-animate">Save the Date</p> -->
@@ -72,7 +74,7 @@
             <span>ម៉ីលិញ</span>
         </div>
         <!-- <p class="save-date-date scroll-animate">March 22<sup>nd</sup> 2026</p> -->
-        <p class="save-date-khmer scroll-animate">ថ្ងៃអាទិត្យ ទី២២ ខែមីនា ឆ្នាំ២០២៦</p>
+        <p class="save-date-khmer scroll-animate">ថ្ងៃសៅរ៍ ទី២៥ ខែមេសា ឆ្នាំ២០២៦</p>
 
         <!-- Countdown -->
         <section class="countdown-section animate-scale">
@@ -97,7 +99,7 @@
             <!-- Header -->
             <header class="wedding-header scroll-animate">
                 <div class="symbol-top">
-                    <img src="assets/khmer-symbol.png" alt="Chhun" class="chhun-symbol">
+                    <img src="assets/khmer-symbol.png" alt="Chhun" class="chhun-symbol" loading="lazy">
                 </div>
                 <h1 class="main-title">សិរីមង្គលអាពាហ៍ពិពាហ៍</h1>
                 <!-- <h2 class="sub-title">Wedding Invitation</h2> -->
@@ -112,7 +114,7 @@
                     </div>
                     <div class="bride">
                         <h3 class="khmer-name"><span class="title">លោក</span> ឆាំង ម៉េង</h3>
-                        <h3 class="khmer-name"><span class="title">អ្នកស្រី</span> រី គឹមស្រុី</h3>
+                        <h3 class="khmer-name"><span class="title">អ្នកស្រី</span> រី គឹមស្រុី ​​​</h3>
                     </div>
                 </div>
             </section>
@@ -259,34 +261,34 @@
 
         <div class="gallery-grid">
             <div class="gallery-item gallery-tall scroll-animate" onclick="openLightbox(0)">
-                <img src="assets/gallery/1.jpg" alt="Wedding Photo">
+                <img src="assets/gallery/1.jpg" alt="Wedding Photo" loading="lazy">
             </div>
             <div class="gallery-item scroll-animate" onclick="openLightbox(1)">
-                <img src="assets/gallery/2.jpg" alt="Wedding Photo">
+                <img src="assets/gallery/2.jpg" alt="Wedding Photo" loading="lazy">
             </div>
             <div class="gallery-item scroll-animate" onclick="openLightbox(2)">
-                <img src="assets/gallery/3.jpg" alt="Wedding Photo">
+                <img src="assets/gallery/3.jpg" alt="Wedding Photo" loading="lazy">
             </div>
             <div class="gallery-item gallery-wide scroll-animate" onclick="openLightbox(3)">
-                <img src="assets/gallery/4.jpg" alt="Wedding Photo">
+                <img src="assets/gallery/4.jpg" alt="Wedding Photo" loading="lazy">
             </div>
             <div class="gallery-item scroll-animate" onclick="openLightbox(4)">
-                <img src="assets/gallery/5.jpg" alt="Wedding Photo">
+                <img src="assets/gallery/5.jpg" alt="Wedding Photo" loading="lazy">
             </div>
             <div class="gallery-item scroll-animate" onclick="openLightbox(5)">
-                <img src="assets/gallery/6.jpg" alt="Wedding Photo">
+                <img src="assets/gallery/6.jpg" alt="Wedding Photo" loading="lazy">
             </div>
             <div class="gallery-item gallery-tall scroll-animate" onclick="openLightbox(6)">
-                <img src="assets/gallery/7.jpg" alt="Wedding Photo">
+                <img src="assets/gallery/7.jpg" alt="Wedding Photo" loading="lazy">
             </div>
             <div class="gallery-item scroll-animate" onclick="openLightbox(7)">
-                <img src="assets/gallery/8.jpg" alt="Wedding Photo">
+                <img src="assets/gallery/8.jpg" alt="Wedding Photo" loading="lazy">
             </div>
             <div class="gallery-item gallery-wide scroll-animate" onclick="openLightbox(8)">
-                <img src="assets/gallery/9.jpg" alt="Wedding Photo">
+                <img src="assets/gallery/9.jpg" alt="Wedding Photo" loading="lazy">
             </div>
             <div class="gallery-item gallery-wide scroll-animate" onclick="openLightbox(9)">
-                <img src="assets/gallery/10.jpg" alt="Wedding Photo">
+                <img src="assets/gallery/10.jpg" alt="Wedding Photo" loading="lazy">
             </div>
         </div>
 
@@ -327,14 +329,14 @@
                     <button class="qr-tab" data-target="kh">រៀល</button>
                 </div>
                 <div class="qr-content active" id="qr-us">
-                    <img src="assets/qrcode_us.jpeg" alt="QR Code" class="qr-code-img">
+                    <img src="assets/qrcode_us.jpeg" alt="QR Code" class="qr-code-img" loading="lazy">
                     <div class="account-info">
                         <p class="account-label">ម្ចាស់គណនី</p>
                         <p class="account-name">HOUY N. & CHHY O.</p>
                     </div>
                 </div>
                 <div class="qr-content" id="qr-kh">
-                    <img src="assets/qrcode_kh.jpeg" alt="QR Code" class="qr-code-img">
+                    <img src="assets/qrcode_kh.jpeg" alt="QR Code" class="qr-code-img" loading="lazy">
                     <div class="account-info">
                         <p class="account-label">ម្ចាស់គណនី</p>
                         <p class="account-name">CHHY OUKSA</p>
