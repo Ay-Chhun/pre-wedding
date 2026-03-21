@@ -194,8 +194,17 @@ let currentLightboxIndex = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     // Automatically find all images added to the gallery HTML
-    document.querySelectorAll('.gallery-item img').forEach(img => {
-        galleryImages.push(img.getAttribute('src'));
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    galleryItems.forEach((item, index) => {
+        const img = item.querySelector('img');
+        if (img) {
+            galleryImages.push(img.getAttribute('src'));
+            // Override the hardcoded HTML completely to prevent array mismatches
+            item.onclick = (e) => {
+                e.preventDefault();
+                openLightbox(index);
+            };
+        }
     });
 });
 

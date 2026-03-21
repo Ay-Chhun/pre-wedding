@@ -83,11 +83,11 @@
 /* Global Styles */
 :root {
     --primary-pink: #ffe5ec;
-    --deep-pink: #d63384;
-    --gold: #c5a059;
+    --deep-pink: #e04b8b; /* Vibrant Pink from mockup */
+    --gold: #ce9d4d; /* Bright Gold */
     --gold-text: #f0e68c;
     /* Lighter gold for text on dark bg */
-    --text-color: #551a37;
+    --text-color: #8c6843; /* Bronze/Gold from mockup */
     --khmer-header-font: 'Moul', cursive;
     --khmer-body-font: 'Battambang', sans-serif;
     --script-font: 'Great Vibes', cursive;
@@ -297,19 +297,21 @@ body {
 
 .cover-title {
     font-family: var(--khmer-header-font);
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    color: #fff;
+    color: #EDD19C; /* Soft Champagne Gold */
+    text-shadow: 1px 2px 4px rgba(60, 30, 0, 0.5);
     white-space: nowrap;
+    letter-spacing: 1px;
 }
 
 .cover-names {
     font-family: var(--khmer-header-font);
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: bold;
-    margin-bottom: 20px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 15px;
+    color: #EDD19C; /* Soft Champagne Gold */
+    text-shadow: 2px 3px 5px rgba(60, 30, 0, 0.5);
     display: flex;
     align-items: center;
     gap: 15px;
@@ -323,22 +325,24 @@ body {
 
 .welcome-text {
     font-family: var(--khmer-body-font);
-    font-size: 1.1rem;
-    margin-top: 0px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    font-size: 1.3rem;
+    margin-top: 10px;
+    color: #EDD19C; /* Soft Champagne Gold */
+    text-shadow: 1px 1px 3px rgba(60, 30, 0, 0.6);
 }
 
 .guest-name {
     font-family: var(--khmer-header-font);
-    font-size: 1.2rem;
-    margin-top: 8px;
-    padding: 10px 30px;
-    border-top: 1px solid rgba(255, 255, 255, 0.7);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.7);
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    color: var(--gold-text);
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+    font-size: 1.4rem;
+    margin-top: 10px;
+    padding: 12px 35px;
+    border-top: 1.5px solid rgba(255, 255, 255, 0.8);
+    border-bottom: 1.5px solid rgba(255, 255, 255, 0.8);
+    background: rgba(0, 0, 0, 0.15); /* Much lighter box */
+    border-radius: 8px;
+    color: #EDD19C; /* Soft Champagne Gold */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
 .cover-footer {
@@ -353,23 +357,26 @@ body {
 
 .cover-date {
     font-family: var(--khmer-body-font);
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     margin-bottom: 20px;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+    color: #EDD19C; /* Soft Champagne Gold */
+    text-shadow: 1px 1px 3px rgba(60, 30, 0, 0.6);
+    font-weight: bold;
 }
 
 /* Open Invite Button */
 .open-invite-btn {
     font-family: var(--khmer-body-font);
-    font-size: 1.1rem;
-    color: #fff;
-    background: #d1be9c;
-    border: 2px solid rgba(255, 255, 255, 0.4);
+    font-size: 1.2rem;
+    color: #EDD19C;
+    background: rgba(0, 0, 0, 0.35);
+    border: 2px solid rgba(237, 209, 156, 0.4);
     padding: 12px 40px;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: bold;
     letter-spacing: 1px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     animation: zoom-btn 1.5s ease-in-out infinite;
 }
 
@@ -866,9 +873,9 @@ body {
 
 .event-item {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 8px;
+    flex-wrap: nowrap; /* Forces time and name to stay side-by-side */
+    align-items: flex-start; /* Keeps text aligned to the top bullet if it wraps */
+    gap: 15px; /* Creates clean spacing between columns */
     padding: 10px 5px;
     border-bottom: 1px dashed rgba(214, 51, 132, 0.2);
     position: relative;
@@ -900,6 +907,8 @@ body {
     font-size: 0.85rem;
     font-weight: bold;
     white-space: nowrap;
+    width: 150px; /* Forces a perfect uniform column width for every single row */
+    flex-shrink: 0; /* Prevents long titles from crushing the time column */
 }
 
 .event-name {
@@ -907,6 +916,9 @@ body {
     font-size: 1rem;
     color: var(--text-color);
     text-shadow: 1px 1px 0 #fff;
+    flex-grow: 1;
+    word-break: break-word; /* Safely break super long Khmer words without destroying layout */
+    line-height: 1.5;
 }
 
 /* Rest of the Card Styles from previous ... */
