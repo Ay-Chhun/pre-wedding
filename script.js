@@ -9,7 +9,7 @@ if (WebApp) {
 }
 
 // Set the date we're counting down to
-const weddingDate = new Date("Apr 25, 2026 17:00:00").getTime();
+const weddingDate = new Date("Apr 25, 2026 00:00:00").getTime();
 
 // Update the count down every 1 second
 const countdownTimer = setInterval(function () {
