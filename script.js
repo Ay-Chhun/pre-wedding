@@ -189,19 +189,15 @@ document.querySelectorAll('.scroll-animate, .animate-left, .animate-right, .anim
 });
 
 // ===== Lightbox Gallery =====
-const galleryImages = [
-    'assets/gallery/1.jpg',
-    'assets/gallery/2.jpg',
-    'assets/gallery/3.jpg',
-    'assets/gallery/4.jpg',
-    'assets/gallery/5.jpg',
-    'assets/gallery/6.jpg',
-    'assets/gallery/7.jpg',
-    'assets/gallery/8.jpg',
-    'assets/gallery/9.jpg',
-    'assets/gallery/10.jpg'
-];
+let galleryImages = [];
 let currentLightboxIndex = 0;
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Automatically find all images added to the gallery HTML
+    document.querySelectorAll('.gallery-item img').forEach(img => {
+        galleryImages.push(img.getAttribute('src'));
+    });
+});
 
 // Build thumbnails
 function buildThumbnails() {
