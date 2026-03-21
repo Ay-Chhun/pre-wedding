@@ -83,11 +83,14 @@
 /* Global Styles */
 :root {
     --primary-pink: #ffe5ec;
-    --deep-pink: #e04b8b; /* Vibrant Pink from mockup */
-    --gold: #ce9d4d; /* Bright Gold */
+    --deep-pink: #e04b8b;
+    /* Vibrant Pink from mockup */
+    --gold: #ce9d4d;
+    /* Bright Gold */
     --gold-text: #f0e68c;
     /* Lighter gold for text on dark bg */
-    --text-color: #8c6843; /* Bronze/Gold from mockup */
+    --text-color: #8c6843;
+    /* Bronze/Gold from mockup */
     --khmer-header-font: 'Moul', cursive;
     --khmer-body-font: 'Battambang', sans-serif;
     --script-font: 'Great Vibes', cursive;
@@ -289,9 +292,11 @@ body {
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Headers as close to top as possible */
+    justify-content: flex-start;
+    /* Headers as close to top as possible */
     align-items: center;
-    padding: 2vh 20px 40px; /* Shifted even higher to top of screen */
+    padding: 8vh 20px 40px;
+    /* Moved down slightly away from bezel */
     /* Removed translate transform to prevent overlaps */
 }
 
@@ -299,7 +304,8 @@ body {
     font-family: var(--khmer-header-font);
     font-size: 2.2rem;
     margin-bottom: 20px;
-    color: #EDD19C; /* Soft Champagne Gold */
+    color: #EDD19C;
+    /* Soft Champagne Gold */
     text-shadow: 1px 2px 4px rgba(60, 30, 0, 0.5);
     white-space: nowrap;
     letter-spacing: 1px;
@@ -310,7 +316,8 @@ body {
     font-size: 3.5rem;
     font-weight: bold;
     margin-bottom: 15px;
-    color: #EDD19C; /* Soft Champagne Gold */
+    color: #EDD19C;
+    /* Soft Champagne Gold */
     text-shadow: 2px 3px 5px rgba(60, 30, 0, 0.5);
     display: flex;
     align-items: center;
@@ -326,7 +333,7 @@ body {
 .welcome-text {
     font-family: var(--khmer-body-font);
     font-size: 1.3rem;
-    margin-top: 5vh; /* Pulled much higher to clear more vertical space */
+    margin-top: 4vh; /* Pulled even higher as requested */
     color: #EDD19C; /* Soft Champagne Gold */
     text-shadow: 1px 1px 3px rgba(60, 30, 0, 0.6);
 }
@@ -338,11 +345,13 @@ body {
     padding: 12px 35px;
     border-top: 1.5px solid rgba(255, 255, 255, 0.8);
     border-bottom: 1.5px solid rgba(255, 255, 255, 0.8);
-    background: rgba(0, 0, 0, 0.15); /* Much lighter box */
+    background: rgba(0, 0, 0, 0.15);
+    /* Much lighter box */
     border-radius: 8px;
-    color: #EDD19C; /* Soft Champagne Gold */
+    color: #EDD19C;
+    /* Soft Champagne Gold */
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .cover-footer {
@@ -359,7 +368,8 @@ body {
     font-family: var(--khmer-body-font);
     font-size: 1.2rem;
     margin-bottom: 20px;
-    color: #EDD19C; /* Soft Champagne Gold */
+    color: #EDD19C;
+    /* Soft Champagne Gold */
     text-shadow: 1px 1px 3px rgba(60, 30, 0, 0.6);
     font-weight: bold;
 }
@@ -873,9 +883,12 @@ body {
 
 .event-item {
     display: flex;
-    flex-wrap: nowrap; /* Forces time and name to stay side-by-side */
-    align-items: flex-start; /* Keeps text aligned to the top bullet if it wraps */
-    gap: 15px; /* Creates clean spacing between columns */
+    flex-wrap: nowrap;
+    /* Forces time and name to stay side-by-side */
+    align-items: flex-start;
+    /* Keeps text aligned to the top bullet if it wraps */
+    gap: 15px;
+    /* Creates clean spacing between columns */
     padding: 10px 5px;
     border-bottom: 1px dashed rgba(214, 51, 132, 0.2);
     position: relative;
@@ -907,8 +920,10 @@ body {
     font-size: 0.85rem;
     font-weight: bold;
     white-space: nowrap;
-    width: 150px; /* Forces a perfect uniform column width for every single row */
-    flex-shrink: 0; /* Prevents long titles from crushing the time column */
+    width: 150px;
+    /* Forces a perfect uniform column width for every single row */
+    flex-shrink: 0;
+    /* Prevents long titles from crushing the time column */
 }
 
 .event-name {
@@ -917,7 +932,8 @@ body {
     color: var(--text-color);
     text-shadow: 1px 1px 0 #fff;
     flex-grow: 1;
-    word-break: break-word; /* Safely break super long Khmer words without destroying layout */
+    word-break: break-word;
+    /* Safely break super long Khmer words without destroying layout */
     line-height: 1.5;
 }
 
