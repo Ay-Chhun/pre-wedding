@@ -1234,9 +1234,11 @@ img {
 }
 
 .card-footer {
-    margin-top: 20px;
+    margin-top: -10px; /* Reduced to bring it closer to the text above if needed, but the user says 'upper abit' usually means higher relative to bottom */
+    margin-bottom: 80px;
     font-size: 0.8rem;
     color: #999;
+    text-align: center;
 }
 
 .audio-control {
