@@ -645,9 +645,9 @@ if (addCalendarBtn) {
             }
         } else {
             // Android and Desktop devices handle Google Calendar web links perfectly
-            const eventTitle = encodeURIComponent("Chhun & Meylinh's Wedding");
-            const location = encodeURIComponent("Kehatthan Khang Srey, Koh Thom, Kandal");
-            const details = encodeURIComponent("We are very excited to celebrate our special day with you! សូមគោរពអញ្ជើញចូលរួមជាភ្ញៀវកិត្តិយស។");
+            const eventTitle = encodeURIComponent("សិរីមង្គលអាពាហ៍ពិពាហ៍ ឈុន & ម៉ីលិញ");
+            const location = encodeURIComponent("គេហដ្ឋានខាងស្រី ភូមិថ្មី ឃុំលើកដែក ស្រុកកោះធំ ខេត្តកណ្តាល");
+            const details = encodeURIComponent("យើងខ្ញុំពិតជាមានក្តីសោមនស្សរីករាយក្រៃលែងក្នុងការអបអរសាទរថ្ងៃដ៏ពិសេសនេះជាមួយអ្នក! សូមគោរពអញ្ជើញចូលរួមជាភ្ញៀវកិត្តិយស។");
             
             // UTC times: 2026-04-25 17:00 ICT is 10:00 UTC, 21:00 ICT is 14:00 UTC
             const startDate = "20260425T100000Z";
@@ -675,11 +675,11 @@ function startEnvelopes() {
     envelopesStarted = true;
 
     const predefinedWishes = [
-        { name: 'Chhun & Meylinh', message: 'We can’t wait to celebrate our big day with you! 💖' },
+        { name: 'ឈុន & ម៉ីលិញ', message: 'យើងរង់ចាំអបអរសាទរថ្ងៃដ៏អស្ចារ្យនេះជាមួយអ្នក! 💖' },
         { name: 'ឈុន & ម៉ីលិញ', message: 'អរគុណដែលបានចូលរួមអបអរសាទរថ្ងៃពិសេសរបស់ពួកយើង។' },
-        { name: 'Chhun & Meylinh', message: 'Your presence means the world to us! ✨' },
+        { name: 'ឈុន & ម៉ីលិញ', message: 'វត្តមានរបស់អ្នកគឺមានន័យខ្លាំងណាស់សម្រាប់យើង! ✨' },
         { name: 'ឈុន & ម៉ីលិញ', message: 'វត្តមានរបស់អ្នកគឺជាកិត្តិយសដ៏ធំបំផុតសម្រាប់ពួកយើង។' },
-        { name: 'Chhun & Meylinh', message: 'Thank you for being part of our love story! 🥂' },
+        { name: 'ឈុន & ម៉ីលិញ', message: 'អរគុណដែលបានក្លាយជាចំណែករឿងរ៉ាវនៃស្នេហារបស់យើង! 🥂' },
         { name: 'ឈុន & ម៉ីលិញ', message: 'សូមជូនពរអ្នកជួបតែសេចក្តីសុខ និងសុភមង្គល។' }
     ];
     
@@ -738,7 +738,7 @@ function createFloatingWish(name, message, isFirst = false) {
     if (isFirst) {
         hintHtml = `
             <div style="margin-top: 15px; font-size: 13px; font-family: var(--khmer-body-font); background: #fce4ec; border: 1px dashed var(--deep-pink); color: #888; padding: 4px 12px; border-radius: 12px; white-space: nowrap; animation: pulseHint 1.5s infinite alternate; pointer-events: none;">
-                👆 ទាញ និងចុចលេង (Tap & Drag)
+                👆 សូមចុច និងទាញលេង
             </div>
         `;
     }
@@ -748,12 +748,12 @@ function createFloatingWish(name, message, isFirst = false) {
             ${randomIcon}
         </div>
         <div class="wish-text">"${message}"</div>
-        <div class="wish-author">- ${name}</div>
+        <div class="wish-author">ពី៖ ${name}</div>
         ${hintHtml}
     `;
     
-    // Keep it entirely on screen regardless of phone width (260px is approx width)
-    const maxLeft = window.innerWidth > 280 ? window.innerWidth - 260 : 10;
+    // Keep it entirely on screen regardless of phone width (180px is approx width)
+    const maxLeft = window.innerWidth > 220 ? window.innerWidth - 200 : 10;
     wishEl.style.left = (Math.random() * maxLeft + 10) + 'px'; 
     
     // First envelope floats faster to catch attention (e.g., 8 to 12s). 

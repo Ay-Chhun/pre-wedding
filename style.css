@@ -1660,8 +1660,8 @@ img {
     background: rgba(255, 255, 255, 0.95);
     border: 2px solid var(--gold);
     border-radius: 15px;
-    padding: 20px 15px 15px;
-    width: 240px;
+    padding: 15px 12px 10px;
+    width: 180px;
     box-shadow: 0 8px 30px rgba(0,0,0,0.15);
     animation: floatUpWish 13s linear forwards;
     display: flex;
@@ -1695,17 +1695,17 @@ img {
 }
 
 .wish-icon {
-    font-size: 3rem;
+    font-size: 2rem;
     position: absolute;
-    top: -55px;
+    top: -35px;
     filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
 }
 
 .wish-text {
     font-family: var(--khmer-body-font);
-    font-size: 1rem;
-    margin-bottom: 10px;
-    margin-top: 5px;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+    margin-top: 3px;
     font-style: italic;
     color: #444;
     text-align: center;
@@ -1714,7 +1714,7 @@ img {
 
 .wish-author {
     font-family: var(--khmer-body-font);
-    font-size: 0.9rem;
+    font-size: 0.75rem;
     font-weight: bold;
     color: var(--deep-pink);
     text-align: right;
