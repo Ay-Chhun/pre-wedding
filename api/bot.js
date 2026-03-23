@@ -1,5 +1,3 @@
-const https = require('https');
-
 module.exports = async (req, res) => {
   // Only allow POST requests for the webhook (from Telegram)
   if (req.method !== 'POST') {
@@ -8,13 +6,19 @@ module.exports = async (req, res) => {
 
   try {
     // Vercel automatically parses the JSON body into req.body
-    const message = req.body.message;
+    const message = req.body?.message;
 
     // Check if the user sent a message and if it is exactly "/start"
     if (message && message.text === '/start') {
       const chatId = message.chat.id;
       
       const botToken = process.env.TELEGRAM_BOT_TOKEN;
+      if (!botToken) {
+        console.error("TELEGRAM_BOT_TOKEN is missing in Environment Variables");
+        // We still return 200 so Telegram stops retrying
+        return res.status(200).send('OK but token missing');
+      }
+
       const webAppUrl = 'https://pre-wedding-six.vercel.app';
 
       const replyData = JSON.stringify({
@@ -27,27 +31,24 @@ module.exports = async (req, res) => {
         }
       });
 
-      // Send the beautifully formatted reply back to Telegram API
-      await new Promise((resolve, reject) => {
-        const request = https.request(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': Buffer.byteLength(replyData)
-          }
-        }, (response) => {
-          resolve();
-        });
-        
-        request.on('error', (e) => reject(e));
-        request.write(replyData);
-        request.end();
+      // Send the beautifully formatted reply back to Telegram API using modern fetch
+      const result = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: replyData
       });
+      
+      if (!result.ok) {
+        const errorText = await result.text();
+        console.error("Telegram API Error:", errorText);
+      }
     }
 
     return res.status(200).send('OK'); // Tell Telegram we got the message
   } catch (error) {
-    console.error(error);
+    console.error("Server Error:", error);
     return res.status(500).send('Internal Server Error');
   }
 };
