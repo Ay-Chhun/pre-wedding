@@ -355,22 +355,37 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// Interactive Click Burst (Hearts & Magic)
+// Interactive Click Burst (Ripple & Magic)
 document.addEventListener('click', function(e) {
-    if(e.target.closest('.floating-heart')) return;
+    if(e.target.closest('.floating-heart') || e.target.closest('button') || e.target.closest('a')) return;
     
-    const numParticles = 4;
-    const colors = ['#ff69b4', '#ff4d4d', '#ff99cc', '#fce4ec'];
+    // 1. Create Ripple
+    const ripple = document.createElement('div');
+    ripple.className = 'click-ripple';
+    ripple.style.left = e.clientX + 'px';
+    ripple.style.top = e.clientY + 'px';
+    document.body.appendChild(ripple);
+    
+    setTimeout(() => {
+        ripple.remove();
+    }, 1000);
+
+    // 2. Create Burst Particles
+    const numParticles = 8; // More particles for a richer effect
+    const colors = ['#ff69b4', '#ff4d4d', '#EDD19C', '#ffffff'];
+    const shapes = ['<i class="fa-solid fa-heart"></i>', '✨', '💖', '⭐'];
     
     for (let i = 0; i < numParticles; i++) {
         const particle = document.createElement('div');
         particle.classList.add('click-particle');
-        particle.innerHTML = Math.random() > 0.4 ? '<i class="fa-solid fa-heart"></i>' : '✨'; 
         
-        const size = Math.random() * 0.8 + 0.5; 
+        // Randomly pick shape and color
+        particle.innerHTML = shapes[Math.floor(Math.random() * shapes.length)];
         const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        const size = Math.random() * 1 + 0.6; // 0.6rem to 1.6rem
         const angle = Math.random() * Math.PI * 2; 
-        const distance = Math.random() * 60 + 20; 
+        const distance = Math.random() * 80 + 30; // 30px to 110px spread
         
         particle.style.left = e.clientX + 'px';
         particle.style.top = e.clientY + 'px';
@@ -378,14 +393,14 @@ document.addEventListener('click', function(e) {
         particle.style.color = color;
         
         particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
-        particle.style.setProperty('--ty', Math.sin(angle) * distance - 30 + 'px'); 
+        particle.style.setProperty('--ty', Math.sin(angle) * distance - 40 + 'px'); 
         particle.style.setProperty('--rot', (Math.random() * 360 - 180) + 'deg');
         
         document.body.appendChild(particle);
         
         setTimeout(() => {
             particle.remove();
-        }, 800);
+        }, 1000);
     }
 });
 
@@ -438,7 +453,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Floating Hearts on Load
 document.addEventListener("DOMContentLoaded", function () {
-    const numHearts = 40;
+    const numHearts = 15;
     const heartsContainer = document.createElement('div');
     heartsContainer.id = 'hearts-container';
     heartsContainer.style.position = 'fixed';
@@ -468,7 +483,7 @@ document.addEventListener("DOMContentLoaded", function () {
             heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
             heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 10 + 15) + 's'; // 15 to 25 seconds
+            heart.style.animationDuration = (Math.random() * 5 + 7) + 's'; // 7 to 12 seconds
             const remSize = Math.random() * 2.5 + 2.5;
             heart.style.fontSize = remSize + 'rem'; // 2.5rem to 5rem
             
@@ -497,14 +512,84 @@ document.addEventListener("DOMContentLoaded", function () {
             // Remove the heart from DOM after animation completes
             setTimeout(() => {
                 heart.remove();
-            }, 26000); // Wait enough for slowest heart
-        }, i * 400); // Slower stagger
+            }, 13000); // Wait enough for slowest heart
+        }, i * 150); // Faster stagger
     }
     
     // Remove container after all hearts are done
     setTimeout(() => {
         heartsContainer.remove();
-    }, numHearts * 400 + 26500);
+    }, numHearts * 150 + 13500);
 });
+
+// ==========================================
+// NEW EFFECTS: Sparkles & Petals
+// ==========================================
+
+// 1. Sparkle Cursor Trail
+document.addEventListener('mousemove', function(e) {
+    if (Math.random() > 0.4) return; // Reduce density so it's not overwhelming
+    createSparkle(e.clientX, e.clientY);
+});
+
+document.addEventListener('touchmove', function(e) {
+    if (Math.random() > 0.3) return; // Reduce density for touch
+    const touch = e.touches[0];
+    createSparkle(touch.clientX, touch.clientY);
+}, {passive: true});
+
+function createSparkle(x, y) {
+    const sparkle = document.createElement('div');
+    sparkle.className = 'cursor-sparkle';
+    sparkle.innerHTML = '✨';
+    sparkle.style.left = x + 'px';
+    sparkle.style.top = y + 'px';
+    sparkle.style.fontSize = (Math.random() * 0.8 + 0.4) + 'rem';
+    sparkle.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
+    
+    document.body.appendChild(sparkle);
+    setTimeout(() => sparkle.remove(), 1000);
+}
+
+// 2. Falling Cherry Blossom Petals
+function createFallingPetals() {
+    const numPetals = 15; // Number of petals falling at once
+    for (let i = 0; i < numPetals; i++) {
+        setTimeout(spawnPetal, Math.random() * 5000);
+    }
+}
+
+function spawnPetal() {
+    const petal = document.createElement('div');
+    petal.className = 'falling-petal';
+    const shapes = ['🌸', '🌺', '🍃', '✨']; // mostly cherry blossoms
+    petal.innerHTML = shapes[Math.random() > 0.8 ? (Math.floor(Math.random() * 3) + 1) : 0]; 
+    
+    // Randomize starting position horizontally
+    petal.style.left = Math.random() * 100 + 'vw';
+    
+    // Randomize size slightly
+    petal.style.fontSize = (Math.random() * 0.8 + 1) + 'rem';
+    
+    // Randomize animation duration
+    const duration = Math.random() * 8 + 7; // 7 to 15 seconds to fall completely
+    petal.style.animationDuration = duration + 's';
+    
+    document.body.appendChild(petal);
+    
+    // Remove petal after it falls, and respawn a new one
+    setTimeout(() => {
+        if (document.body.contains(petal)) {
+            petal.remove();
+            spawnPetal();
+        }
+    }, duration * 1000);
+}
+
+// Start falling petals along with everything else
+document.addEventListener("DOMContentLoaded", function () {
+    createFallingPetals();
+});
+
 
 

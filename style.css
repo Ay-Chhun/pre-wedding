@@ -406,10 +406,64 @@ body {
     0%,
     100% {
         transform: scale(1);
+        box-shadow: 0 4px 15px rgba(237, 209, 156, 0.4);
     }
 
     50% {
         transform: scale(1.1);
+        box-shadow: 0 4px 30px rgba(237, 209, 156, 0.8), 0 0 15px rgba(237, 209, 156, 0.6);
+    }
+}
+
+/* Cursor Sparkle Trail */
+.cursor-sparkle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 100000;
+    font-size: 1.2rem;
+    color: #EDD19C; /* Gold */
+    text-shadow: 0 0 5px #fff, 0 0 10px #EDD19C;
+    animation: sparkle-fade 1s ease-out forwards;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes sparkle-fade {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -100%) scale(0.2) rotate(90deg);
+    }
+}
+
+/* Falling Cherry Blossom Petals */
+.falling-petal {
+    position: fixed;
+    top: -10vh;
+    pointer-events: none;
+    z-index: 9998;
+    color: rgba(255, 182, 193, 0.8); /* Light pink */
+    font-size: 1.5rem;
+    animation: fall linear infinite;
+    filter: drop-shadow(0 0 3px rgba(255,105,180,0.3));
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(110vh) translateX(30vw) rotate(360deg);
+        opacity: 0;
     }
 }
 
@@ -1479,16 +1533,16 @@ body {
 /* Floating Hearts Effect */
 .floating-heart {
     position: fixed;
-    bottom: -10vh;
+    top: -10vh; /* Start from above the screen */
     color: #ff69b4; /* Pink */
     pointer-events: auto;
     cursor: pointer;
-    animation: floatUp ease-in forwards;
+    animation: floatDown ease-in forwards;
     filter: drop-shadow(0 0 5px rgba(255, 105, 180, 0.5));
     z-index: 9999;
 }
 
-@keyframes floatUp {
+@keyframes floatDown {
     0% {
         transform: translateY(0) scale(0.5) rotate(0deg);
         opacity: 0;
@@ -1500,7 +1554,32 @@ body {
         opacity: 0.8;
     }
     100% {
-        transform: translateY(-120vh) scale(1.5) rotate(360deg);
+        transform: translateY(120vh) scale(1.5) rotate(360deg); /* Fall downward */
+        opacity: 0;
+    }
+}
+
+/* Click Ripple */
+.click-ripple {
+    position: fixed;
+    border: 2px solid rgba(237, 209, 156, 0.6);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0);
+    animation: rippleWave 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    z-index: 99999;
+    width: 60px;
+    height: 60px;
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.3);
+}
+
+@keyframes rippleWave {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(3);
         opacity: 0;
     }
 }
@@ -1510,7 +1589,7 @@ body {
     position: fixed;
     pointer-events: none;
     transform: translate(-50%, -50%) scale(0);
-    animation: particleBurst 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    animation: particleBurst 1s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     z-index: 100000;
     filter: drop-shadow(0 0 3px rgba(255,105,180,0.5));
 }
@@ -1518,6 +1597,9 @@ body {
 @keyframes particleBurst {
     0% {
         transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+        opacity: 1;
+    }
+    60% {
         opacity: 1;
     }
     100% {
