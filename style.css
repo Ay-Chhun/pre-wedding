@@ -1504,3 +1504,24 @@ body {
         opacity: 0;
     }
 }
+
+/* Magic Burst */
+.click-particle {
+    position: fixed;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0);
+    animation: particleBurst 0.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    z-index: 100000;
+    filter: drop-shadow(0 0 3px rgba(255,105,180,0.5));
+}
+
+@keyframes particleBurst {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.2) rotate(var(--rot));
+        opacity: 0;
+    }
+}

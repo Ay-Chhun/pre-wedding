@@ -355,7 +355,39 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-
+// Interactive Click Burst (Hearts & Magic)
+document.addEventListener('click', function(e) {
+    if(e.target.closest('.floating-heart')) return;
+    
+    const numParticles = 4;
+    const colors = ['#ff69b4', '#ff4d4d', '#ff99cc', '#fce4ec'];
+    
+    for (let i = 0; i < numParticles; i++) {
+        const particle = document.createElement('div');
+        particle.classList.add('click-particle');
+        particle.innerHTML = Math.random() > 0.4 ? '<i class="fa-solid fa-heart"></i>' : '✨'; 
+        
+        const size = Math.random() * 0.8 + 0.5; 
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const angle = Math.random() * Math.PI * 2; 
+        const distance = Math.random() * 60 + 20; 
+        
+        particle.style.left = e.clientX + 'px';
+        particle.style.top = e.clientY + 'px';
+        particle.style.fontSize = size + 'rem';
+        particle.style.color = color;
+        
+        particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+        particle.style.setProperty('--ty', Math.sin(angle) * distance - 30 + 'px'); 
+        particle.style.setProperty('--rot', (Math.random() * 360 - 180) + 'deg');
+        
+        document.body.appendChild(particle);
+        
+        setTimeout(() => {
+            particle.remove();
+        }, 800);
+    }
+});
 
 /* --- Back to Top Button Logic --- */
 const backToTopBtn = document.getElementById('back-to-top');
@@ -420,11 +452,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     for (let i = 0; i < numHearts; i++) {
         setTimeout(() => {
+            const heartIcons = [
+                '<i class="fa-solid fa-heart"></i>', 
+                '<i class="fa-regular fa-heart"></i>',
+                '💖', 
+                '💕', 
+                '💗', 
+                '💓', 
+                '💝'
+            ];
+            const heartColors = ['#ff69b4', '#ff4d4d', '#ff99cc', '#fce4ec', '#ffb6c1', '#e04b8b'];
+            
             const heart = document.createElement('div');
             heart.classList.add('floating-heart');
-            heart.innerHTML = '<i class="fa-solid fa-heart"></i>';
+            heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+            heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 3 + 4) + 's'; // 4 to 7 seconds
+            heart.style.animationDuration = (Math.random() * 10 + 15) + 's'; // 15 to 25 seconds
             const remSize = Math.random() * 2.5 + 2.5;
             heart.style.fontSize = remSize + 'rem'; // 2.5rem to 5rem
             
@@ -453,14 +497,14 @@ document.addEventListener("DOMContentLoaded", function () {
             // Remove the heart from DOM after animation completes
             setTimeout(() => {
                 heart.remove();
-            }, 7000);
-        }, i * 150); // Stagger the appearance
+            }, 26000); // Wait enough for slowest heart
+        }, i * 400); // Slower stagger
     }
     
     // Remove container after all hearts are done
     setTimeout(() => {
         heartsContainer.remove();
-    }, numHearts * 150 + 7500);
+    }, numHearts * 400 + 26500);
 });
 
 
