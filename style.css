@@ -268,7 +268,6 @@ img {
 /* Cover Card Specifics */
 .card-container.cover-card {
     height: 100vh;
-    background: url('assets/cover-bg.jpg') no-repeat center center/cover;
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -289,18 +288,36 @@ img {
 }
 
 .cover-card .overlay {
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4));
+    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.45));
+    z-index: 1; /* Above slideshow */
 }
 
-.overlay {
+.cover-slideshow {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    /* Dark overlay for readability */
-    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
+    z-index: 0;
+    overflow: hidden;
+}
+
+.cover-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 2s ease-in-out, transform 8s linear;
+    transform: scale(1.05); /* Slight initial scale for Ken Burns effect */
+}
+
+.cover-slide.active {
+    opacity: 1;
+    transform: scale(1.15); /* Slow zoom in effect */
 }
 
 .cover-content {

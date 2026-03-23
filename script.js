@@ -453,6 +453,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Floating Hearts on Load
 document.addEventListener("DOMContentLoaded", function () {
+    // 1. Initialize Cover Slideshow
+    const slides = document.querySelectorAll('.cover-slide');
+    let currentSlide = 0;
+    
+    if (slides.length > 1) {
+        setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 5000); // Change image every 5 seconds
+    }
+
     const numHearts = 15;
     const heartsContainer = document.createElement('div');
     heartsContainer.id = 'hearts-container';
