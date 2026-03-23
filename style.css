@@ -1481,7 +1481,8 @@ body {
     position: fixed;
     bottom: -10vh;
     color: #ff69b4; /* Pink */
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: pointer;
     animation: floatUp ease-in forwards;
     filter: drop-shadow(0 0 5px rgba(255, 105, 180, 0.5));
     z-index: 9999;

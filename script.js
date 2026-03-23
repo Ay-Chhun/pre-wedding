@@ -425,7 +425,28 @@ document.addEventListener("DOMContentLoaded", function () {
             heart.innerHTML = '<i class="fa-solid fa-heart"></i>';
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.animationDuration = (Math.random() * 3 + 4) + 's'; // 4 to 7 seconds
-            heart.style.fontSize = (Math.random() * 2.5 + 2.5) + 'rem'; // 2.5rem to 5rem
+            const remSize = Math.random() * 2.5 + 2.5;
+            heart.style.fontSize = remSize + 'rem'; // 2.5rem to 5rem
+            
+            heart.addEventListener('click', function(e) {
+                heart.innerHTML = '';
+                heart.style.backgroundImage = "url('assets/CX7_7941.jpg')";
+                heart.style.backgroundSize = "cover";
+                heart.style.backgroundPosition = "center top";
+                heart.style.width = (remSize * 40) + 'px'; // Expand slightly into image
+                heart.style.height = (remSize * 40) + 'px';
+                heart.style.color = "transparent"; // Hide any text/icon leftover just in case
+
+                const heartSvgMask = "url('data:image/svg+xml;utf8,<svg viewBox=\"0 0 512 512\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z\"/></svg>')";
+                heart.style.webkitMaskImage = heartSvgMask;
+                heart.style.webkitMaskPosition = "center";
+                heart.style.webkitMaskRepeat = "no-repeat";
+                heart.style.webkitMaskSize = "contain";
+                heart.style.maskImage = heartSvgMask;
+                heart.style.maskPosition = "center";
+                heart.style.maskRepeat = "no-repeat";
+                heart.style.maskSize = "contain";
+            });
             
             heartsContainer.appendChild(heart);
             
@@ -441,3 +462,5 @@ document.addEventListener("DOMContentLoaded", function () {
         heartsContainer.remove();
     }, numHearts * 150 + 7500);
 });
+
+
