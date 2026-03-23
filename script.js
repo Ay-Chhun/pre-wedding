@@ -591,5 +591,84 @@ document.addEventListener("DOMContentLoaded", function () {
     createFallingPetals();
 });
 
+// ==========================================
+// NEW FEATURE: Add to Calendar
+// ==========================================
+const addCalendarBtn = document.getElementById('add-calendar-btn');
+if (addCalendarBtn) {
+    addCalendarBtn.addEventListener('click', () => {
+        const eventTitie = "Chhun & Meylinh's Wedding";
+        const location = "Kehatthan Khang Srey, Koh Thom, Kandal";
+        // April 25, 2026 5:00 PM
+        const startDate = "20260425T170000";
+        const endDate = "20260425T210000";
+        const details = "We are very excited to celebrate our special day with you! សូមគោរពអញ្ជើញចូលរួមជាភ្ញៀវកិត្តិយស។";
 
+        const icsData = `BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Phnom_Penh:${startDate}\nDTEND;TZID=Asia/Phnom_Penh:${endDate}\nSUMMARY:${eventTitie}\nLOCATION:${location}\nDESCRIPTION:${details}\nEND:VEVENT
+END:VCALENDAR`;
 
+        const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'chhun_meylinh_wedding.ics');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+}
+
+// ==========================================
+// NEW BACKGROUND EFFECT: Floating Wish Cards
+// ==========================================
+document.addEventListener("DOMContentLoaded", function () {
+    const predefinedWishes = [
+        { name: 'ប៉ាម៉ាក់', message: 'សូមឱ្យកូនទាំងពីរមានសុភមង្គលរហូតដល់ចាស់កោងខ្នង។' },
+        { name: 'បងស្រី', message: 'ជូនពរប្អូនទាំងពីរស្រលាញ់គ្នាជារៀងរហូត។' },
+        { name: 'មិត្តល្អ', message: 'Happy Wedding! Wishing you a lifetime of love and happiness!' },
+        { name: 'ពូមីង', message: 'សូមអបអរសាទរថ្ងៃមង្គលការក្មួយ។' },
+        { name: 'Friend', message: 'So happy for you two! Congratulations!' },
+        { name: 'បងប្រុស', message: 'សូមជោគជ័យ និងមានសេចក្តីសុខក្នុងជីវិតគ្រួសារ។' }
+    ];
+
+    setInterval(() => {
+        // 50% chance to spawn one every 5 seconds
+        if(Math.random() > 0.5) return; 
+
+        const randomWish = predefinedWishes[Math.floor(Math.random() * predefinedWishes.length)];
+        createFloatingWish(randomWish.name, randomWish.message);
+    }, 5000); 
+});
+
+function createFloatingWish(name, message) {
+    const wishEl = document.createElement('div');
+    wishEl.className = 'floating-wish';
+    
+    // Add balloon/envelope icon
+    const icons = ['🎈', '🕊️', '💌', '💝', '💖'];
+    const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+    
+    wishEl.innerHTML = `
+        <div class="wish-icon">${randomIcon}</div>
+        <div class="wish-text">"${message}"</div>
+        <div class="wish-author">- ${name}</div>
+    `;
+    
+    // Random position horizontally between 5vw and 85vw
+    wishEl.style.left = Math.random() * 80 + 5 + 'vw'; 
+    
+    // Random float duration (12 to 18 seconds)
+    const floatTime = Math.random() * 6 + 12; 
+    wishEl.style.animationDuration = floatTime + 's';
+    
+    document.body.appendChild(wishEl);
+    
+    setTimeout(() => {
+        if(document.body.contains(wishEl)) {
+            wishEl.remove();
+        }
+    }, floatTime * 1000);
+}
