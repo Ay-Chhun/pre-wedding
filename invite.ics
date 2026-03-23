@@ -1,0 +1,12 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Chhun and Meylinh Wedding//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+DTSTART;TZID=Asia/Phnom_Penh:20260425T170000
+DTEND;TZID=Asia/Phnom_Penh:20260425T210000
+SUMMARY:Chhun & Meylinh's Wedding
+LOCATION:Kehatthan Khang Srey, Koh Thom, Kandal
+DESCRIPTION:We are very excited to celebrate our special day with you! សូមគោរពអញ្ជើញចូលរួមជាភ្ញៀវកិត្តិយស។
+END:VEVENT
+END:VCALENDAR

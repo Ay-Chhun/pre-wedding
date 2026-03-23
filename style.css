@@ -455,31 +455,32 @@ img {
     }
 }
 
-/* Falling Cherry Blossom Petals */
+/* Elegant Falling Hearts */
 .falling-petal {
     position: fixed;
-    top: -10vh;
+    top: -5vh;
     pointer-events: none;
     z-index: 9998;
-    color: rgba(255, 182, 193, 0.8); /* Light pink */
-    font-size: 1.5rem;
-    animation: fall linear infinite;
-    filter: drop-shadow(0 0 3px rgba(255,105,180,0.3));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fall linear forwards;
+}
+
+.falling-petal i {
+    text-shadow: 0 0 8px currentColor;
 }
 
 @keyframes fall {
     0% {
-        transform: translateY(0) translateX(0) rotate(0deg);
+        transform: translateY(-10vh) translateX(0) rotate(0deg);
         opacity: 0;
     }
     10% {
         opacity: 1;
     }
-    80% {
-        opacity: 0.8;
-    }
     100% {
-        transform: translateY(110vh) translateX(30vw) rotate(360deg);
+        transform: translateY(110vh) translateX(var(--sway)) rotate(var(--rotX));
         opacity: 0;
     }
 }

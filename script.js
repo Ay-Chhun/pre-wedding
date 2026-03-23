@@ -551,28 +551,42 @@ function createSparkle(x, y) {
     setTimeout(() => sparkle.remove(), 1000);
 }
 
-// 2. Falling Cherry Blossom Petals
+// 2. Elegant Falling Hearts (Depth of Field Effect)
 function createFallingPetals() {
-    const numPetals = 15; // Number of petals falling at once
+    const numPetals = 25; // More petals for a fuller effect
     for (let i = 0; i < numPetals; i++) {
-        setTimeout(spawnPetal, Math.random() * 5000);
+        setTimeout(spawnPetal, Math.random() * 8000);
     }
 }
 
 function spawnPetal() {
     const petal = document.createElement('div');
     petal.className = 'falling-petal';
-    const shapes = ['🌸', '🌺', '🍃', '✨']; // mostly cherry blossoms
-    petal.innerHTML = shapes[Math.random() > 0.8 ? (Math.floor(Math.random() * 3) + 1) : 0]; 
+    // Elegant soft hearts instead of emojis
+    petal.innerHTML = '<i class="fa-solid fa-heart"></i>'; 
     
     // Randomize starting position horizontally
     petal.style.left = Math.random() * 100 + 'vw';
     
-    // Randomize size slightly
-    petal.style.fontSize = (Math.random() * 0.8 + 1) + 'rem';
+    // Vary size between tiny and small
+    const size = Math.random() * 0.6 + 0.4;
+    petal.style.fontSize = size + 'rem';
+    
+    // Elegant colors: Soft whites, pinks, champagnes
+    const colors = ['rgba(255,255,255,0.8)', 'rgba(255,182,193,0.7)', 'rgba(250,230,234,0.8)', 'rgba(237,209,156,0.6)'];
+    petal.style.color = colors[Math.floor(Math.random() * colors.length)];
+    
+    // Random CSS vars for dynamic sway and rotation
+    petal.style.setProperty('--sway', (Math.random() * 30 - 15) + 'vw'); 
+    petal.style.setProperty('--rotX', (Math.random() * 360 + 180) + 'deg'); 
+    
+    // Varying blur for out-of-focus dreamy look
+    if (Math.random() > 0.4) {
+        petal.style.filter = `blur(${Math.random() * 2.5}px)`;
+    }
     
     // Randomize animation duration
-    const duration = Math.random() * 8 + 7; // 7 to 15 seconds to fall completely
+    const duration = Math.random() * 10 + 10; // 10s to 20s to fall gently
     petal.style.animationDuration = duration + 's';
     
     document.body.appendChild(petal);
@@ -592,29 +606,41 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // ==========================================
-// NEW FEATURE: Add to Calendar
+// NEW FEATURE: Add to Calendar (OS Detection)
 // ==========================================
 const addCalendarBtn = document.getElementById('add-calendar-btn');
 if (addCalendarBtn) {
     addCalendarBtn.addEventListener('click', () => {
-        // In-app browsers (like Telegram Mini App) block file downloads and show raw text instead.
-        // The most reliable fix is to use a direct Google Calendar web link.
-        
-        const eventTitle = encodeURIComponent("Chhun & Meylinh's Wedding");
-        const location = encodeURIComponent("Kehatthan Khang Srey, Koh Thom, Kandal");
-        const details = encodeURIComponent("We are very excited to celebrate our special day with you! សូមគោរពអញ្ជើញចូលរួមជាភ្ញៀវកិត្តិយស។");
-        
-        // UTC times: 2026-04-25 17:00 ICT is 10:00 UTC, 21:00 ICT is 14:00 UTC
-        const startDate = "20260425T100000Z";
-        const endDate = "20260425T140000Z";
-        
-        const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&dates=${startDate}/${endDate}&details=${details}&location=${location}&text=${eventTitle}`;
-        
-        // Use Telegram WebApp SDK if available to open external link, otherwise open normally
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
-            window.Telegram.WebApp.openLink(googleCalendarUrl);
+        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        const isIOS = /iPad|iPhone|iPod/.test(userAgent) && !window.MSStream;
+
+        if (isIOS) {
+            // Apple Devices rely entirely on .ics files for Apple Calendar
+            // Instead of generating a blob (which Telegram blocks), we link to the actual invite.ics file!
+            const icsUrl = new URL('invite.ics', window.location.href).href;
+            
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
+                window.Telegram.WebApp.openLink(icsUrl);
+            } else {
+                window.location.href = icsUrl;
+            }
         } else {
-            window.open(googleCalendarUrl, '_blank');
+            // Android and Desktop devices handle Google Calendar web links perfectly
+            const eventTitle = encodeURIComponent("Chhun & Meylinh's Wedding");
+            const location = encodeURIComponent("Kehatthan Khang Srey, Koh Thom, Kandal");
+            const details = encodeURIComponent("We are very excited to celebrate our special day with you! សូមគោរពអញ្ជើញចូលរួមជាភ្ញៀវកិត្តិយស។");
+            
+            // UTC times: 2026-04-25 17:00 ICT is 10:00 UTC, 21:00 ICT is 14:00 UTC
+            const startDate = "20260425T100000Z";
+            const endDate = "20260425T140000Z";
+            
+            const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&dates=${startDate}/${endDate}&details=${details}&location=${location}&text=${eventTitle}`;
+            
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
+                window.Telegram.WebApp.openLink(googleCalendarUrl);
+            } else {
+                window.open(googleCalendarUrl, '_blank');
+            }
         }
     });
 }
@@ -655,28 +681,84 @@ function createFloatingWish(name, message) {
         <div class="wish-author">- ${name}</div>
     `;
     
-    // Random position horizontally between 5vw and 85vw
-    wishEl.style.left = Math.random() * 80 + 5 + 'vw'; 
+    // Keep it entirely on screen regardless of phone width (260px is approx width)
+    const maxLeft = window.innerWidth > 280 ? window.innerWidth - 260 : 10;
+    wishEl.style.left = (Math.random() * maxLeft + 10) + 'px'; 
     
     // Random float duration (Much slower, dreamy float: 25 to 35 seconds)
     const floatTime = Math.random() * 10 + 25; 
     wishEl.style.animationDuration = floatTime + 's';
     
-    // Dismiss on click or swipe
-    const dismissWish = () => {
+    // Interactive drag and pop logic
+    let isDragging = false;
+    let hasMoved = false;
+    let startX = 0, startY = 0;
+    let initialLeft = 0, initialTop = 0;
+    
+    const startDrag = (x, y) => {
+        if(wishEl.dataset.dismissed) return;
+        isDragging = true;
+        hasMoved = false;
+        startX = x;
+        startY = y;
+        
+        const rect = wishEl.getBoundingClientRect();
+        initialLeft = rect.left;
+        initialTop = rect.top;
+        
+        // Freeze float animation to follow finger/mouse
+        wishEl.style.animation = 'none';
+        wishEl.style.bottom = 'auto'; // Remove bottom pinning
+        wishEl.style.left = initialLeft + 'px';
+        wishEl.style.top = initialTop + 'px';
+        
+        wishEl.style.transition = 'none'; // Instant follow
+        wishEl.style.transform = 'scale(1.05)'; // Slight lift effect when grabbed
+        wishEl.style.zIndex = '1000000'; // Bring to front
+    };
+    
+    const doDrag = (x, y) => {
+        if(!isDragging) return;
+        
+        const dx = x - startX;
+        const dy = y - startY;
+        
+        if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+            hasMoved = true;
+        }
+        
+        wishEl.style.left = (initialLeft + dx) + 'px';
+        wishEl.style.top = (initialTop + dy) + 'px';
+    };
+    
+    const endDrag = () => {
+        if(!isDragging) return;
+        isDragging = false;
+        
+        wishEl.style.transform = 'scale(1)';
+        wishEl.style.transition = 'transform 0.4s ease, opacity 0.4s ease'; // restore
+        
+        if (!hasMoved) {
+            // Tap without drag -> POP!
+            popWish();
+        } else {
+            // Let it fall down smoothly acting like you dropped a physical card
+            wishEl.style.transition = 'top 1.5s cubic-bezier(0.5, 0, 1, 0.5), opacity 1.5s ease-in';
+            wishEl.style.top = (window.innerHeight + 200) + 'px';
+            wishEl.style.opacity = '0';
+            setTimeout(() => {
+                if(document.body.contains(wishEl)) wishEl.remove();
+            }, 1500);
+        }
+    };
+    
+    const popWish = () => {
         if(wishEl.dataset.dismissed) return;
         wishEl.dataset.dismissed = "true";
         
-        // Get current position to spawn particles exactly there
         let rect = wishEl.getBoundingClientRect();
         
-        // Stop float animation instantly where it is
-        wishEl.style.animation = 'none'; 
-        wishEl.style.bottom = 'auto';
-        wishEl.style.top = rect.top + 'px';
-        wishEl.style.left = rect.left + 'px';
-        
-        // "Pop" the card itself (Scale up quickly and fade out)
+        // Fast pop transform
         wishEl.style.transform = 'scale(1.4)';
         wishEl.style.opacity = '0';
         
@@ -685,39 +767,42 @@ function createFloatingWish(name, message) {
             const particle = document.createElement('div');
             particle.className = 'click-particle';
             particle.innerHTML = '✨';
-            
-            // Start from the center of the balloon card
             particle.style.left = (rect.left + rect.width/2) + 'px';
-            particle.style.top = (rect.top) + 'px'; // Center roughly where balloon icon is
+            particle.style.top = (rect.top) + 'px';
             particle.style.color = '#e04b8b';
             particle.style.fontSize = '1.8rem';
-            
             const angle = (Math.PI * 2 / 6) * i;
-            const distance = 80; // Explode outwards
+            const distance = 80;
             particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
             particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
             particle.style.setProperty('--rot', (Math.random() * 360) + 'deg');
-            
             document.body.appendChild(particle);
             setTimeout(() => { if(document.body.contains(particle)) particle.remove(); }, 1000);
         }
 
-        // Remove the actual card smoothly
         setTimeout(() => {
             if(document.body.contains(wishEl)) wishEl.remove();
         }, 400);
     };
 
-    wishEl.addEventListener('click', dismissWish);
-    
-    // Swipe support to dismiss
-    let startY = 0;
-    wishEl.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, {passive: true});
-    wishEl.addEventListener('touchend', e => {
-        if(Math.abs(e.changedTouches[0].clientY - startY) > 20) {
-            dismissWish();
+    // Attach listeners
+    wishEl.addEventListener('mousedown', e => startDrag(e.clientX, e.clientY));
+    wishEl.addEventListener('touchstart', e => startDrag(e.touches[0].clientX, e.touches[0].clientY), {passive: true});
+
+    // We must catch move/up on the window so if the mouse/finger moves fast it doesn't lose the element
+    const onMove = (e) => {
+        if(isDragging) {
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            doDrag(clientX, clientY);
         }
-    }, {passive: true});
+    };
+    const onEnd = () => endDrag();
+
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onEnd);
+    window.addEventListener('touchmove', onMove, {passive: false});
+    window.addEventListener('touchend', onEnd);
     
     document.body.appendChild(wishEl);
     
