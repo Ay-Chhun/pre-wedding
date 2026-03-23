@@ -668,6 +668,7 @@ if (addCalendarBtn) {
 // NEW BACKGROUND EFFECT: Floating Wish Cards
 // ==========================================
 let envelopesStarted = false;
+let envelopesSpawnedCount = 0;
 
 function startEnvelopes() {
     if (envelopesStarted) return;
@@ -682,16 +683,29 @@ function startEnvelopes() {
         { name: 'ឈុន & ម៉ីលិញ', message: 'សូមជូនពរអ្នកជួបតែសេចក្តីសុខ និងសុភមង្គល។' }
     ];
     
-    // Spawn the first envelope immediately so they don't have to wait for the interval
-    const firstWish = predefinedWishes[Math.floor(Math.random() * predefinedWishes.length)];
-    createFloatingWish(firstWish.name, firstWish.message, true); // explicitly true for the FIRST one
+    // Spawn the first envelope immediately
+    if (envelopesSpawnedCount < 3) {
+        const firstWish = predefinedWishes[Math.floor(Math.random() * predefinedWishes.length)];
+        createFloatingWish(firstWish.name, firstWish.message, true);
+        envelopesSpawnedCount++;
+    }
 
-    setInterval(() => {
-        // Only a 40% chance to spawn one every 12 seconds (much less frequent)
+    const envelopeInterval = setInterval(() => {
+        if (envelopesSpawnedCount >= 3) {
+            clearInterval(envelopeInterval);
+            return;
+        }
+
+        // Only a 40% chance to spawn one every 12 seconds
         if(Math.random() > 0.4) return; 
 
         const randomWish = predefinedWishes[Math.floor(Math.random() * predefinedWishes.length)];
         createFloatingWish(randomWish.name, randomWish.message, false);
+        envelopesSpawnedCount++;
+
+        if (envelopesSpawnedCount >= 3) {
+            clearInterval(envelopeInterval);
+        }
     }, 12000); 
 }
 
