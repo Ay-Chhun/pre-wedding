@@ -111,7 +111,24 @@ body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
+    
+    /* Disable Text Selection and iOS Callout */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
 }
+
+/* Disable drag and long-press save on all images */
+img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    pointer-events: none; /* Passes clicks to parent div, preventing image context menu */
+}
+
 
 
 
@@ -1648,7 +1665,9 @@ body {
     flex-direction: column;
     align-items: center;
     z-index: 99999;
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: pointer;
+    transition: transform 0.4s ease, opacity 0.4s ease;
 }
 
 .wish-icon {

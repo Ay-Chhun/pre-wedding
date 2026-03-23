@@ -597,27 +597,25 @@ document.addEventListener("DOMContentLoaded", function () {
 const addCalendarBtn = document.getElementById('add-calendar-btn');
 if (addCalendarBtn) {
     addCalendarBtn.addEventListener('click', () => {
-        const eventTitie = "Chhun & Meylinh's Wedding";
-        const location = "Kehatthan Khang Srey, Koh Thom, Kandal";
-        // April 25, 2026 5:00 PM
-        const startDate = "20260425T170000";
-        const endDate = "20260425T210000";
-        const details = "We are very excited to celebrate our special day with you! សូមគោរពអញ្ជើញចូលរួមជាភ្ញៀវកិត្តិយស។";
-
-        const icsData = `BEGIN:VCALENDAR
-VERSION:2.0
-BEGIN:VEVENT
-DTSTART;TZID=Asia/Phnom_Penh:${startDate}\nDTEND;TZID=Asia/Phnom_Penh:${endDate}\nSUMMARY:${eventTitie}\nLOCATION:${location}\nDESCRIPTION:${details}\nEND:VEVENT
-END:VCALENDAR`;
-
-        const blob = new Blob([icsData], { type: 'text/calendar;charset=utf-8' });
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'chhun_meylinh_wedding.ics');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        // In-app browsers (like Telegram Mini App) block file downloads and show raw text instead.
+        // The most reliable fix is to use a direct Google Calendar web link.
+        
+        const eventTitle = encodeURIComponent("Chhun & Meylinh's Wedding");
+        const location = encodeURIComponent("Kehatthan Khang Srey, Koh Thom, Kandal");
+        const details = encodeURIComponent("We are very excited to celebrate our special day with you! សូមគោរពអញ្ជើញចូលរួមជាភ្ញៀវកិត្តិយស។");
+        
+        // UTC times: 2026-04-25 17:00 ICT is 10:00 UTC, 21:00 ICT is 14:00 UTC
+        const startDate = "20260425T100000Z";
+        const endDate = "20260425T140000Z";
+        
+        const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&dates=${startDate}/${endDate}&details=${details}&location=${location}&text=${eventTitle}`;
+        
+        // Use Telegram WebApp SDK if available to open external link, otherwise open normally
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
+            window.Telegram.WebApp.openLink(googleCalendarUrl);
+        } else {
+            window.open(googleCalendarUrl, '_blank');
+        }
     });
 }
 
@@ -626,21 +624,21 @@ END:VCALENDAR`;
 // ==========================================
 document.addEventListener("DOMContentLoaded", function () {
     const predefinedWishes = [
-        { name: 'ប៉ាម៉ាក់', message: 'សូមឱ្យកូនទាំងពីរមានសុភមង្គលរហូតដល់ចាស់កោងខ្នង។' },
-        { name: 'បងស្រី', message: 'ជូនពរប្អូនទាំងពីរស្រលាញ់គ្នាជារៀងរហូត។' },
-        { name: 'មិត្តល្អ', message: 'Happy Wedding! Wishing you a lifetime of love and happiness!' },
-        { name: 'ពូមីង', message: 'សូមអបអរសាទរថ្ងៃមង្គលការក្មួយ។' },
-        { name: 'Friend', message: 'So happy for you two! Congratulations!' },
-        { name: 'បងប្រុស', message: 'សូមជោគជ័យ និងមានសេចក្តីសុខក្នុងជីវិតគ្រួសារ។' }
+        { name: 'Chhun & Meylinh', message: 'We can’t wait to celebrate our big day with you! 💖' },
+        { name: 'ឈុន & ម៉ីលិញ', message: 'អរគុណដែលបានចូលរួមអបអរសាទរថ្ងៃពិសេសរបស់ពួកយើង។' },
+        { name: 'Chhun & Meylinh', message: 'Your presence means the world to us! ✨' },
+        { name: 'ឈុន & ម៉ីលិញ', message: 'វត្តមានរបស់អ្នកគឺជាកិត្តិយសដ៏ធំបំផុតសម្រាប់ពួកយើង។' },
+        { name: 'Chhun & Meylinh', message: 'Thank you for being part of our love story! 🥂' },
+        { name: 'ឈុន & ម៉ីលិញ', message: 'សូមជូនពរអ្នកជួបតែសេចក្តីសុខ និងសុភមង្គល។' }
     ];
 
     setInterval(() => {
-        // 50% chance to spawn one every 5 seconds
-        if(Math.random() > 0.5) return; 
+        // Only a 40% chance to spawn one every 12 seconds (much less frequent)
+        if(Math.random() > 0.4) return; 
 
         const randomWish = predefinedWishes[Math.floor(Math.random() * predefinedWishes.length)];
         createFloatingWish(randomWish.name, randomWish.message);
-    }, 5000); 
+    }, 12000); 
 });
 
 function createFloatingWish(name, message) {
@@ -660,9 +658,66 @@ function createFloatingWish(name, message) {
     // Random position horizontally between 5vw and 85vw
     wishEl.style.left = Math.random() * 80 + 5 + 'vw'; 
     
-    // Random float duration (12 to 18 seconds)
-    const floatTime = Math.random() * 6 + 12; 
+    // Random float duration (Much slower, dreamy float: 25 to 35 seconds)
+    const floatTime = Math.random() * 10 + 25; 
     wishEl.style.animationDuration = floatTime + 's';
+    
+    // Dismiss on click or swipe
+    const dismissWish = () => {
+        if(wishEl.dataset.dismissed) return;
+        wishEl.dataset.dismissed = "true";
+        
+        // Get current position to spawn particles exactly there
+        let rect = wishEl.getBoundingClientRect();
+        
+        // Stop float animation instantly where it is
+        wishEl.style.animation = 'none'; 
+        wishEl.style.bottom = 'auto';
+        wishEl.style.top = rect.top + 'px';
+        wishEl.style.left = rect.left + 'px';
+        
+        // "Pop" the card itself (Scale up quickly and fade out)
+        wishEl.style.transform = 'scale(1.4)';
+        wishEl.style.opacity = '0';
+        
+        // Create 6 magic burst particles
+        for(let i=0; i<6; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'click-particle';
+            particle.innerHTML = '✨';
+            
+            // Start from the center of the balloon card
+            particle.style.left = (rect.left + rect.width/2) + 'px';
+            particle.style.top = (rect.top) + 'px'; // Center roughly where balloon icon is
+            particle.style.color = '#e04b8b';
+            particle.style.fontSize = '1.8rem';
+            
+            const angle = (Math.PI * 2 / 6) * i;
+            const distance = 80; // Explode outwards
+            particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+            particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+            particle.style.setProperty('--rot', (Math.random() * 360) + 'deg');
+            
+            document.body.appendChild(particle);
+            setTimeout(() => { if(document.body.contains(particle)) particle.remove(); }, 1000);
+        }
+
+        // Remove the actual card smoothly
+        setTimeout(() => {
+            if(document.body.contains(wishEl)) wishEl.remove();
+        }, 400);
+    };
+
+    wishEl.addEventListener('click', dismissWish);
+    
+    // Swipe support to dismiss
+    let startY = 0;
+    wishEl.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, {passive: true});
+    wishEl.addEventListener('touchend', e => {
+        if(Math.abs(e.changedTouches[0].clientY - startY) > 20) {
+            dismissWish();
+        }
+    }, {passive: true});
     
     document.body.appendChild(wishEl);
     
@@ -672,3 +727,21 @@ function createFloatingWish(name, message) {
         }
     }, floatTime * 1000);
 }
+
+// ==========================================
+// SECURITY: Disable Copy, Cut, and Right-Clicking
+// ==========================================
+document.addEventListener('contextmenu', function(e) {
+    // Only allow context menu if they happen to be in an input field (none on this site currently)
+    if(!e.target.closest('input') && !e.target.closest('textarea')) {
+        e.preventDefault();
+    }
+});
+
+document.addEventListener('copy', function(e) {
+    e.preventDefault();
+});
+
+document.addEventListener('cut', function(e) {
+    e.preventDefault();
+});
