@@ -340,9 +340,11 @@ img {
 }
 
 .heart {
-    font-size: 2rem;
-    color: #ff4d4d;
+    font-size: 1.8rem; /* Slightly smaller to match golden text */
+    color: #e63946; /* Deep elegant romantic red */
     animation: heartbeat 1.5s infinite;
+    filter: drop-shadow(0 2px 4px rgba(230, 57, 70, 0.4));
+    display: inline-block;
 }
 
 .welcome-text {
@@ -1667,8 +1669,29 @@ img {
     align-items: center;
     z-index: 99999;
     pointer-events: auto;
-    cursor: pointer;
+    cursor: grab;
     transition: transform 0.4s ease, opacity 0.4s ease;
+}
+
+.floating-wish:active {
+    cursor: grabbing;
+}
+
+.attention-wiggle {
+    animation: attentionSeeker 3s infinite;
+}
+
+@keyframes attentionSeeker {
+    0%, 100% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+    5% { transform: scale(1.15) rotate(8deg); filter: brightness(1.2); }
+    10% { transform: scale(1.15) rotate(-8deg); }
+    15% { transform: scale(1.15) rotate(8deg); }
+    20% { transform: scale(1) rotate(0deg); filter: brightness(1); }
+}
+
+@keyframes pulseHint {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 10px rgba(224, 75, 139, 0.4); }
 }
 
 .wish-icon {

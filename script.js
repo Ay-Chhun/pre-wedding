@@ -480,7 +480,26 @@ document.addEventListener("DOMContentLoaded", function () {
             
             const heart = document.createElement('div');
             heart.classList.add('floating-heart');
-            heart.innerHTML = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+            
+            let hintHtml = '';
+            // ONLY show the hint explicitly on the very first heart
+            if (i === 0) {
+                hintHtml = `
+                    <div style="position: absolute; right: -25px; bottom: -20px; font-size: 14px; background: rgba(224, 75, 139, 0.9); color: white; padding: 4px 10px; border-radius: 12px; white-space: nowrap; box-shadow: 0 2px 5px rgba(0,0,0,0.3); animation: pulseHint 1.5s infinite alternate; pointer-events: none;">
+                        👆 សូមចុច (Tap)
+                    </div>
+                `;
+            }
+
+            // Purely visual gesture! No ugly text box!
+            const iconStr = heartIcons[Math.floor(Math.random() * heartIcons.length)];
+            heart.innerHTML = `
+                <div style="position: relative; display: flex; align-items: center; justify-content: center; animation: attentionSeeker 3s infinite;">
+                    <div>${iconStr}</div>
+                    ${hintHtml}
+                </div>
+            `;
+            
             heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.animationDuration = (Math.random() * 5 + 7) + 's'; // 7 to 12 seconds
@@ -648,7 +667,12 @@ if (addCalendarBtn) {
 // ==========================================
 // NEW BACKGROUND EFFECT: Floating Wish Cards
 // ==========================================
-document.addEventListener("DOMContentLoaded", function () {
+let envelopesStarted = false;
+
+function startEnvelopes() {
+    if (envelopesStarted) return;
+    envelopesStarted = true;
+
     const predefinedWishes = [
         { name: 'Chhun & Meylinh', message: 'We can’t wait to celebrate our big day with you! 💖' },
         { name: 'ឈុន & ម៉ីលិញ', message: 'អរគុណដែលបានចូលរួមអបអរសាទរថ្ងៃពិសេសរបស់ពួកយើង។' },
@@ -657,36 +681,70 @@ document.addEventListener("DOMContentLoaded", function () {
         { name: 'Chhun & Meylinh', message: 'Thank you for being part of our love story! 🥂' },
         { name: 'ឈុន & ម៉ីលិញ', message: 'សូមជូនពរអ្នកជួបតែសេចក្តីសុខ និងសុភមង្គល។' }
     ];
+    
+    // Spawn the first envelope immediately so they don't have to wait for the interval
+    const firstWish = predefinedWishes[Math.floor(Math.random() * predefinedWishes.length)];
+    createFloatingWish(firstWish.name, firstWish.message, true); // explicitly true for the FIRST one
 
     setInterval(() => {
         // Only a 40% chance to spawn one every 12 seconds (much less frequent)
         if(Math.random() > 0.4) return; 
 
         const randomWish = predefinedWishes[Math.floor(Math.random() * predefinedWishes.length)];
-        createFloatingWish(randomWish.name, randomWish.message);
+        createFloatingWish(randomWish.name, randomWish.message, false);
     }, 12000); 
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Check if the user already clicked "Open" previously in this session
+    if (sessionStorage.getItem('inviteOpened') === '1') {
+        startEnvelopes();
+    } 
+    
+    // Add logic to start envelopes IMMEDIATELY AFTER the user opens the card
+    const openInviteBtn = document.querySelector('.open-invite-btn');
+    if (openInviteBtn) {
+        openInviteBtn.addEventListener('click', () => {
+            // Start envelopes right away when they click "Open Invite"
+            startEnvelopes();
+        });
+    }
 });
 
-function createFloatingWish(name, message) {
+function createFloatingWish(name, message, isFirst = false) {
     const wishEl = document.createElement('div');
     wishEl.className = 'floating-wish';
     
-    // Add balloon/envelope icon
-    const icons = ['🎈', '🕊️', '💌', '💝', '💖'];
+    // Add balloon/envelope icon (removed bird emoji)
+    const icons = ['🎈', '💌', '💝', '💖'];
     const randomIcon = icons[Math.floor(Math.random() * icons.length)];
     
+    let hintHtml = '';
+    // ONLY show the text hint explicitly on the very first envelope
+    if (isFirst) {
+        hintHtml = `
+            <div style="margin-top: 15px; font-size: 13px; font-family: var(--khmer-body-font); background: #fce4ec; border: 1px dashed var(--deep-pink); color: #888; padding: 4px 12px; border-radius: 12px; white-space: nowrap; animation: pulseHint 1.5s infinite alternate; pointer-events: none;">
+                👆 ទាញ និងចុចលេង (Tap & Drag)
+            </div>
+        `;
+    }
+    
     wishEl.innerHTML = `
-        <div class="wish-icon">${randomIcon}</div>
+        <div class="wish-icon attention-wiggle">
+            ${randomIcon}
+        </div>
         <div class="wish-text">"${message}"</div>
         <div class="wish-author">- ${name}</div>
+        ${hintHtml}
     `;
     
     // Keep it entirely on screen regardless of phone width (260px is approx width)
     const maxLeft = window.innerWidth > 280 ? window.innerWidth - 260 : 10;
     wishEl.style.left = (Math.random() * maxLeft + 10) + 'px'; 
     
-    // Random float duration (Much slower, dreamy float: 25 to 35 seconds)
-    const floatTime = Math.random() * 10 + 25; 
+    // First envelope floats faster to catch attention (e.g., 8 to 12s). 
+    // Later background envelopes stay dreamy and slow (25 to 35s)
+    const floatTime = isFirst ? (Math.random() * 4 + 8) : (Math.random() * 10 + 25); 
     wishEl.style.animationDuration = floatTime + 's';
     
     // Interactive drag and pop logic
