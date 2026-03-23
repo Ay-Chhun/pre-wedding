@@ -403,3 +403,41 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// Floating Hearts on Load
+document.addEventListener("DOMContentLoaded", function () {
+    const numHearts = 40;
+    const heartsContainer = document.createElement('div');
+    heartsContainer.id = 'hearts-container';
+    heartsContainer.style.position = 'fixed';
+    heartsContainer.style.top = '0';
+    heartsContainer.style.left = '0';
+    heartsContainer.style.width = '100%';
+    heartsContainer.style.height = '100%';
+    heartsContainer.style.pointerEvents = 'none';
+    heartsContainer.style.zIndex = '9999';
+    document.body.appendChild(heartsContainer);
+
+    for (let i = 0; i < numHearts; i++) {
+        setTimeout(() => {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerHTML = '<i class="fa-solid fa-heart"></i>';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 4) + 's'; // 4 to 7 seconds
+            heart.style.fontSize = (Math.random() * 2.5 + 2.5) + 'rem'; // 2.5rem to 5rem
+            
+            heartsContainer.appendChild(heart);
+            
+            // Remove the heart from DOM after animation completes
+            setTimeout(() => {
+                heart.remove();
+            }, 7000);
+        }, i * 150); // Stagger the appearance
+    }
+    
+    // Remove container after all hearts are done
+    setTimeout(() => {
+        heartsContainer.remove();
+    }, numHearts * 150 + 7500);
+});
