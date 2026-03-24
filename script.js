@@ -8,6 +8,25 @@ if (WebApp) {
     WebApp.setHeaderColor('secondary_bg_color');
 }
 
+// Function to track app launch securely via Vercel API
+function trackLaunch(guestName = null) {
+    if (!WebApp) return;
+    const userData = WebApp.initDataUnsafe?.user;
+    
+    // Track only once per session
+    if (sessionStorage.getItem('isAppTracked')) return;
+    sessionStorage.setItem('isAppTracked', '1');
+
+    fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            user: userData,
+            guestName: guestName
+        })
+    }).catch(err => console.error("Tracking error:", err));
+}
+
 // Set the date we're counting down to
 const weddingDate = new Date("Apr 25, 2026 00:00:00").getTime();
 
@@ -338,10 +357,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (foundName) {
                     updateGuestUI(foundName);
+                    trackLaunch(foundName);
+                } else {
+                    trackLaunch(); // Fallback tracking
                 }
             })
             .catch(error => {
                 console.error('Error loading guest list:', error);
+                trackLaunch(); // Fallback tracking if fetch fails
                 if (window.location.protocol === 'file:') {
                     alert("Guest Name Feature requires a local server due to browser security.\nPlease use: http://localhost:8000/index.html?guest=" + guestId);
                 }
@@ -351,7 +374,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
         if (fullName) {
             updateGuestUI(fullName);
+            trackLaunch(fullName);
+        } else {
+            trackLaunch();
         }
+    } else {
+        // Just track anonymous launch if nothing else
+        trackLaunch();
     }
 });
 
