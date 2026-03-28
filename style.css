@@ -877,13 +877,35 @@ img {
     animation: pulse-icon 0.8s infinite ease-in-out;
 }
 
-/* Ensure hidden items are truly hidden during transition */
+/* 
+ * Pro-Level Optimization: "Silent Background Pre-loading"
+ * Using visibility instead of display:none forces the browser to 
+ * start download the images in the background so "Show More" 
+ * is truly instant (60fps feel).
+ */
 .gallery-extra {
-    display: none !important;
+    visibility: hidden;
+    height: 0;
+    width: 0;
+    overflow: hidden;
+    padding: 0 !important;
+    margin: 0 !important;
+    opacity: 0;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    pointer-events: none;
 }
 
 .gallery-extra.show {
-    display: block !important;
+    visibility: visible;
+    height: auto;
+    width: auto;
+    pointer-events: auto;
+    display: block !important; /* Forces layout recalculation */
+}
+
+.gallery-extra.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Lightbox */
