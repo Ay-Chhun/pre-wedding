@@ -556,7 +556,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 5000); // Change image every 5 seconds
     }
 
-    const numHearts = 8;
+    const numHearts = 7; // Reduced quantity for a cleaner look (around 5-8)
     const heartsContainer = document.createElement('div');
     heartsContainer.id = 'hearts-container';
     heartsContainer.style.position = 'fixed';
@@ -1005,29 +1005,3 @@ document.addEventListener('copy', function(e) {
 document.addEventListener('cut', function(e) {
     e.preventDefault();
 });
-
-
-
-/* Enhanced Butterfly Cluster */
-function createButterflyCluster() {
-    const container = document.querySelector('.cover-names');
-    if (!container) return;
-    
-    // Create 10 tiny butterflies
-    for (let i = 0; i < 10; i++) {
-        const b = document.createElement('div');
-        b.className = 'butterfly-tiny';
-        b.style.left = (Math.random() * 100 - 50) + '%';
-        b.style.top = (Math.random() * 100 - 50) + '%';
-        b.style.animationDuration = (Math.random() * 10 + 5) + 's';
-        b.style.animationDelay = (Math.random() * 5) + 's';
-        
-        const wing = document.createElement('div');
-        wing.className = 'wing';
-        b.appendChild(wing);
-        
-        container.appendChild(b);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', createButterflyCluster);

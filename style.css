@@ -2122,3 +2122,63 @@ img {
     animation: gentleBreathe 3s infinite;
 }
 
+
+
+
+/* Clear White Sitting Doves (Doves on Branch) */
+.sitting-birds {
+    top: 30px;
+    right: 25px;
+    width: 65px;
+    height: 65px;
+}
+
+.birds-icon {
+    width: 100%;
+    height: 100%;
+    /* Simplified but clear Dove shape path */
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M21 4.5l-2.25 1.5-1.5 2.25-1.5-2.25L13.5 4.5 15.75 3l1.5-2.25L18.75 3 21 4.5zM12 21c-4.41 0-8-3.59-8-8 0-1.74.56-3.34 1.5-4.64.4-.56.91-1.07 1.5-1.5.02-.01.04-.03.06-.04 1.43-1 3.14-1.62 5-1.62h.43c.18 0 .36.03.52.1.33.15.55.45.55.8v.1c0 .44-.36.8-.8.8h-.5c-2.31 0-4.32 1.25-5.4 3.12-.13.24-.25.48-.35.73l-.06.15c-.43 1.1-.69 2.29-.69 3.53a6.406 6.406 0 006.4 6.4c1.24 0 2.43-.35 3.44-.96.26-.14.51-.31.75-.48l.15-.12c1.94-1.57 3.16-3.89 3.16-6.49 0-.44.36-.8.8-.8s.8.36.8.8c0 3.11-1.46 5.89-3.79 7.77-1.12.87-2.4 1.51-3.79 1.87-.27.06-.54.1-.82.13-.26.03-.52.04-.79.05l-.01-.01z"/></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+    animation: gentleBreathe 4s ease-in-out infinite alternate;
+}
+
+@keyframes gentleBreathe {
+    0% { transform: translateY(0) scale(1.0); }
+    100% { transform: translateY(-3px) scale(1.05); }
+}
+
+/* Clear Flying Bird SVG */
+.bird {
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="rgba(255,255,255,0.85)" d="M21 4.5l-2.25 1.5-1.5 2.25-1.5-2.25L13.5 4.5 15.75 3l1.5-2.25L18.75 3 21 4.5zM12 5.5l1.5 2.25 2.25 1.5-2.25 1.5L12 13l-1.5-2.25-2.25-1.5 2.25-1.5L12 5.5zM12 5.5"/> </svg>');
+    background-size: contain;
+    width: 30px;
+    height: 30px;
+}
+
+
+
+/* FINAL Clear Doves on Branch Stylle */
+.sitting-birds {
+    top: 50px;
+    right: 35px;
+    width: 75px;
+    height: 75px;
+    z-index: 1000;
+}
+
+.birds-icon {
+    width: 100%;
+    height: 100%;
+    /* Two distinct birds with heads */
+    background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M192 304c0-53 43-96 96-96h14.5c4.1-13.7 15.6-24 30.1-24h3.3c16.6 0 30 13.4 30 30v11.8c12.1 6 22.1 15.6 28.5 27.2l4.8 8.6c10.4 18.7 8.7 42.1-4.2 59.1L355.2 368c-4.4 5.9-11.3 9.4-18.6 9.4H304c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32v1.4l5.3-7.1 24.3-32.4c1.9-2.5 2.1-5.9.6-8.6l-4.8-8.6c-1.9-3.3-5-5.7-8.6-6.6l-9.5-2.4c-13.2-3.3-26.7 1-36.8 11.1L272 312c-5.3 5.3-13.8 5.3-19.1 0l-7.5-7.5c-35-35-53.4-83.3-53.4-132.5V30h64v142c0 31.8 11.8 62.5 33.3 86.1l-10-10C240.2 209 208 158.4 208 104V80h64v24c0 35.3 28.7 64 64 64s64-28.7 64-64V80h64v24c0 54.4-32.2 105-83.3 144.1l-10 10c21.5-23.6 33.3-54.3 33.3-86.1V30h64v142c0 49.3-18.3 97.5-53.4 132.5l-7.5 7.5c-5.3 5.3-13.8 5.3-19.1 0l-14.9-14.9c-10.1-10.1-23.6-14.4-36.8-11.1l-9.5 2.4c-3.6.9-6.7 3.3-8.6 6.6l-4.8 8.6c-1.5 2.7-1.3 6.1.6 8.6l24.3 32.4 5.3 7.1V341z"/></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: gentleWiggle 5s ease-in-out infinite alternate;
+}
+
+@keyframes gentleWiggle {
+    0% { transform: scale(1.0) rotate(0deg); }
+    100% { transform: scale(1.08) rotate(5deg); }
+}
