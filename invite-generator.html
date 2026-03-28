@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Invite Link Generator</title>
+    <style>
+        :root {
+            --primary: #ff6b98;
+            --gold: #d4af37;
+            --bg: #fdfcf8;
+        }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: #444;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 { color: var(--primary); font-family: serif; font-size: 2.5rem; margin-bottom: 10px; }
+        .config {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        input {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            flex-grow: 1;
+            font-size: 1rem;
+        }
+        .guest-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+        }
+        th { background: #fff5f8; padding: 15px; text-align: left; font-size: 0.9rem; color: var(--primary); text-transform: uppercase; }
+        td { padding: 12px 15px; border-bottom: 1px solid #eee; }
+        .copy-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .copy-btn:hover { transform: scale(1.05); background: #e04b77; }
+        .copy-btn.copied { background: #4CAF50; }
+        .link-text { color: #888; font-size: 0.8rem; font-family: monospace; }
+        tr:hover { background: #fdfdfd; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Invite Link Generator</h1>
+        <p>Enter your website URL below to generate personal links for every guest.</p>
+    </div>
+
+    <div class="config">
+        <strong>Website URL:</strong>
+        <input type="text" id="site-url" value="https://yourwedding.com" placeholder="e.g., https://kaly-rak.com">
+        <button id="refresh-btn" class="copy-btn" style="background:var(--gold)">Update All Links</button>
+    </div>
+
+    <table class="guest-table" id="guest-list">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Guest Name</th>
+                <th>Personal Invite Link</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Loaded via JS -->
+        </tbody>
+    </table>
+
+    <script>
+        const siteUrlInput = document.getElementById('site-url');
+        const tableBody = document.querySelector('#guest-list tbody');
+
+        // Load Guest List from CSV
+        async function loadGuests() {
+            try {
+                const response = await fetch('guest list.csv');
+                const csvData = await response.text();
+                const lines = csvData.split('\n');
+                
+                tableBody.innerHTML = '';
+                
+                // Skip header (No,Name)
+                for (let i = 1; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    
+                    // Simple CSV Parse (Handling commas in names isn't perfect here but works for typical lists)
+                    const parts = line.split(',');
+                    if (parts.length < 2) continue;
+                    
+                    const id = parts[0];
+                    const name = parts.slice(1).join(',').replace(/"/g, ''); // Re-join name if it had commas
+                    
+                    if (!name || name.trim() === '') continue;
+
+                    addGuestRow(id, name);
+                }
+            } catch (error) {
+                console.error("Error loading CSV:", error);
+                alert("Could not load guest list.csv. Make sure the file exists in the same folder.");
+            }
+        }
+
+        function addGuestRow(id, name) {
+            const baseUrl = siteUrlInput.value.replace(/\/$/, ""); // Remove trailing slash
+            const fullUrl = `${baseUrl}/index.html?guest=${id}`;
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${id}</td>
+                <td><strong>${name}</strong></td>
+                <td><span class="link-text">${fullUrl}</span></td>
+                <td><button class="copy-btn" onclick="copyLink(this, '${fullUrl}')">Copy Link</button></td>
+            `;
+            tableBody.appendChild(tr);
+        }
+
+        function copyLink(btn, text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied! ✅';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        document.getElementById('refresh-btn').onclick = loadGuests;
+        
+        // Initial load
+        window.onload = loadGuests;
+    </script>
+</body>
+</html>

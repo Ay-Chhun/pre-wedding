@@ -241,12 +241,25 @@ img {
 
 .connector-text::before,
 .connector-text::after {
-    content: "â™¥";
-    /* Hearts */
-    color: var(--gold);
-    font-size: 0.8rem;
-    margin: 0 8px;
-    vertical-align: 2px;
+    content: "\2665";
+    /* Elegant Unicode Heart */
+    color: var(--deep-pink);
+    font-size: 0.9rem;
+    margin: 0 10px;
+    vertical-align: 1px;
+    display: inline-block;
+    animation: heartbeat 1.5s infinite ease-in-out;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+.heart i {
+    color: #ff6b98;
+    animation: heartbeat 1.3s infinite ease-in-out;
+    display: inline-block;
 }
 
 .save-date-date {
@@ -722,6 +735,14 @@ img {
     background: #fff9f0; /* Warm Base */
     background-size: cover;
     background-position: center;
+
+    /* Extreme High-Performance Scroll (60fps Fix) */
+    content-visibility: auto; /* Ignore off-screen items completely */
+    contain-intrinsic-size: 1px 250px; /* Pre-reserve spot for smooth up-scroll */
+    contain: paint; /* Isolate individual item rendering */
+    will-change: transform; /* Hint to GPU for buttery-smooth movement */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 /* Dreamy Studio Diffusion Backdrop (60fps Optimized) */
