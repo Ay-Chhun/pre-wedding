@@ -804,9 +804,9 @@ img {
     background: inherit;
     background-size: cover;
     background-position: center;
-    filter: blur(10px) sepia(0.2) saturate(1.2) brightness(1.05);
-    /* Luminous & Vibrant */
-    transform: scale(1.15);
+    filter: blur(10px) brightness(1.1); /* Simplified for faster rendering on iPhone */
+    transform: scale(1.15) translateZ(0); /* Force 3D composition layer */
+    -webkit-transform: scale(1.15) translateZ(0);
     z-index: 1;
     opacity: 0.85;
     display: block !important;
@@ -829,7 +829,6 @@ img {
             transparent 50%,
             rgba(255, 255, 255, 0.2) 100%);
     border: 0.8px solid rgba(212, 175, 55, 0.35);
-    /* Elegant Gold Frame */
     border-radius: 10px;
     margin: 3px;
     pointer-events: none;
@@ -861,7 +860,8 @@ img {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
     /* Sync image reveal with parent for total consistency */
     opacity: 0;
-    transition: opacity 0.6s ease-out;
+    transition: opacity 0.5s ease-out 0.1s; /* 0.1s delay ensuring background is always ready */
+    will-change: opacity;
 }
 
 .gallery-item img.loaded {
