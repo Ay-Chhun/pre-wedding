@@ -225,6 +225,68 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
     });
+
+    // Gallery Show More Functionality
+    const showMoreBtn = document.getElementById('show-more-btn');
+    if (showMoreBtn) {
+        // Initial state: hide items after the 11th (0-10 shown)
+        let occupiedSpots = 0;
+        const maxSpots = 10; 
+
+        galleryItems.forEach((item, index) => {
+            const img = item.querySelector('img');
+            if (img) {
+                // Restore the background image for background:inherit compatibility
+                item.style.backgroundImage = `url(${img.src})`;
+            }
+
+            let isWide = item.classList.contains('gallery-wide');
+            
+            // --- NEW: Better Gap Filling Logic ---
+            const nextItem = galleryItems[index + 1];
+            const nextIsWide = nextItem && nextItem.classList.contains('gallery-wide');
+
+            // If this item starts a new row but the NEXT one is wide, 
+            // this item will be alone. Make it wide to fill the row.
+            if (!isWide && (occupiedSpots % 2 === 0) && nextIsWide) {
+                item.classList.add('gallery-wide');
+                isWide = true;
+            }
+            
+            // If this is the last visible item and it's starting a new row, 
+            // make it wide to avoid an empty space on the right.
+            if (!isWide && (occupiedSpots % 2 === 0) && (index === galleryItems.length - 1 || occupiedSpots === maxSpots - 1)) {
+                item.classList.add('gallery-wide');
+                isWide = true;
+            }
+
+            const itemSpots = isWide ? 2 : 1;
+
+            if (occupiedSpots + itemSpots <= maxSpots) {
+                occupiedSpots += itemSpots;
+            } else {
+                item.style.display = 'none';
+                item.classList.add('gallery-extra');
+            }
+        });
+
+        showMoreBtn.addEventListener('click', () => {
+            const extras = document.querySelectorAll('.gallery-extra');
+            extras.forEach((item, i) => {
+                // Use the class defined in CSS for better layout handling
+                item.classList.add('show');
+                // Minimal delay to allow browser to calculate layout before starting fade-in
+                setTimeout(() => {
+                    item.classList.add('visible');
+                }, i * 30); // Faster stagger for better feel
+            });
+            // Fade out the button container
+            showMoreBtn.parentElement.style.opacity = '0';
+            setTimeout(() => {
+                showMoreBtn.parentElement.style.display = 'none';
+            }, 400);
+        });
+    }
 });
 
 // Build thumbnails
@@ -494,7 +556,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 5000); // Change image every 5 seconds
     }
 
-    const numHearts = 15;
+    const numHearts = 8;
     const heartsContainer = document.createElement('div');
     heartsContainer.id = 'hearts-container';
     heartsContainer.style.position = 'fixed';
@@ -943,3 +1005,29 @@ document.addEventListener('copy', function(e) {
 document.addEventListener('cut', function(e) {
     e.preventDefault();
 });
+
+
+
+/* Enhanced Butterfly Cluster */
+function createButterflyCluster() {
+    const container = document.querySelector('.cover-names');
+    if (!container) return;
+    
+    // Create 10 tiny butterflies
+    for (let i = 0; i < 10; i++) {
+        const b = document.createElement('div');
+        b.className = 'butterfly-tiny';
+        b.style.left = (Math.random() * 100 - 50) + '%';
+        b.style.top = (Math.random() * 100 - 50) + '%';
+        b.style.animationDuration = (Math.random() * 10 + 5) + 's';
+        b.style.animationDelay = (Math.random() * 5) + 's';
+        
+        const wing = document.createElement('div');
+        wing.className = 'wing';
+        b.appendChild(wing);
+        
+        container.appendChild(b);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', createButterflyCluster);
