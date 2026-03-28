@@ -12,7 +12,7 @@ if (WebApp) {
 function trackLaunch(guestName = null) {
     if (!WebApp) return;
     const userData = WebApp.initDataUnsafe?.user;
-    
+
     // Track only once per session
     if (sessionStorage.getItem('isAppTracked')) return;
     sessionStorage.setItem('isAppTracked', '1');
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 img.addEventListener('load', revealImage);
                 // Also handle errors gracefully
                 img.addEventListener('error', () => {
-                   item.classList.add('loaded'); // Stop shimmer even if error
+                    item.classList.add('loaded'); // Stop shimmer even if error
                 });
             }
 
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (showMoreBtn) {
         // Initial state: hide items after the 11th (0-10 shown)
         let occupiedSpots = 0;
-        const maxSpots = 10; 
+        const maxSpots = 10;
 
         galleryItems.forEach((item, index) => {
             const img = item.querySelector('img');
@@ -256,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             let isWide = item.classList.contains('gallery-wide');
-            
+
             // --- NEW: Better Gap Filling Logic ---
             const nextItem = galleryItems[index + 1];
             const nextIsWide = nextItem && nextItem.classList.contains('gallery-wide');
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 item.classList.add('gallery-wide');
                 isWide = true;
             }
-            
+
             // If this is the last visible item and it's starting a new row, 
             // make it wide to avoid an empty space on the right.
             if (!isWide && (occupiedSpots % 2 === 0) && (index === galleryItems.length - 1 || occupiedSpots === maxSpots - 1)) {
@@ -280,23 +280,61 @@ document.addEventListener('DOMContentLoaded', () => {
             if (occupiedSpots + itemSpots <= maxSpots) {
                 occupiedSpots += itemSpots;
             } else {
-                item.style.display = 'none';
+                // DON'T use display: none; visibility: hidden allows background pre-loading!
                 item.classList.add('gallery-extra');
+                // We'll handle pre-loading these in the background
             }
         });
+
+        // Background Pre-loading Technique: 
+        // Force the browser to fetch images in the background so the 'Show More' is instant.
+        const preloadGalleryImages = () => {
+            const extras = document.querySelectorAll('.gallery-extra img');
+            extras.forEach((img, i) => {
+                // Staggered fetch into browser cache using Image object
+                // This works even if the DOM element is 'display: none'
+                setTimeout(() => {
+                    const preloadImg = new Image();
+                    preloadImg.src = img.src;
+                }, 500 + (i * 100)); // Start after 500ms, then 100ms apart
+            });
+        };
+
+        // Run pre-loading after the first interaction or after a short idle delay
+        let preloaded = false;
+        const triggerPreload = () => {
+            if (preloaded) return;
+            preloaded = true;
+            preloadGalleryImages();
+            window.removeEventListener('scroll', triggerPreload);
+            window.removeEventListener('touchstart', triggerPreload);
+        };
+
+        // Aggressive but polite trigger: Idle callback, 3s timeout, or first interaction
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => triggerPreload());
+        }
+        setTimeout(triggerPreload, 3000);
+        window.addEventListener('scroll', triggerPreload, { passive: true });
+        window.addEventListener('touchstart', triggerPreload, { passive: true });
 
         showMoreBtn.addEventListener('click', () => {
             const hiddenExtras = Array.from(document.querySelectorAll('.gallery-extra')).filter(el => !el.classList.contains('show'));
             const imagesToShow = 15;
-            
+
             // Only show the next 15 hidden items
             for (let i = 0; i < imagesToShow && i < hiddenExtras.length; i++) {
                 const item = hiddenExtras[i];
                 item.classList.add('show');
-                // Subtle delay for staggered loading feel
+                
+                // Remove lazy loading since we want them to show immediately from cache
+                const img = item.querySelector('img');
+                if (img) img.removeAttribute('loading');
+
+                // Subtle delay for staggered loading feel (60ms for more 'premium' reveal)
                 setTimeout(() => {
                     item.classList.add('visible');
-                }, i * 35); 
+                }, i * 60);
             }
 
             // Check if there are any hidden extras remaining
@@ -321,7 +359,7 @@ function buildThumbnails() {
     if (thumbnailsBuilt) return; // DON'T REBUILD IF ALREADY IN DOM
     const container = document.getElementById('lightbox-thumbnails');
     if (!container) return;
-    
+
     // Efficiently batch the DOM appends
     const fragment = document.createDocumentFragment();
     galleryImages.forEach((src, i) => {
@@ -348,7 +386,7 @@ function updateLightbox() {
         img.decoding = 'async'; // Super smooth decoding
     }
     if (counter) counter.textContent = `${currentLightboxIndex + 1} / ${galleryImages.length}`;
-    
+
     // Update active thumbnail and auto-scroll it into view
     const thumbs = document.querySelectorAll('.lightbox-thumb');
     thumbs.forEach((t, i) => {
@@ -366,10 +404,10 @@ function openLightbox(index) {
     if (lightbox) {
         lightbox.classList.add('active');
         document.body.style.overflow = 'hidden';
-        
+
         // Build them only once in background
         if (!thumbnailsBuilt) buildThumbnails();
-        
+
         updateLightbox();
     }
 }
@@ -496,16 +534,16 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Interactive Click Burst (Ripple & Magic)
-document.addEventListener('click', function(e) {
-    if(e.target.closest('.floating-heart') || e.target.closest('button') || e.target.closest('a')) return;
-    
+document.addEventListener('click', function (e) {
+    if (e.target.closest('.floating-heart') || e.target.closest('button') || e.target.closest('a')) return;
+
     // 1. Create Ripple
     const ripple = document.createElement('div');
     ripple.className = 'click-ripple';
     ripple.style.left = e.clientX + 'px';
     ripple.style.top = e.clientY + 'px';
     document.body.appendChild(ripple);
-    
+
     setTimeout(() => {
         ripple.remove();
     }, 1000);
@@ -514,30 +552,30 @@ document.addEventListener('click', function(e) {
     const numParticles = 8; // More particles for a richer effect
     const colors = ['#ff69b4', '#ff4d4d', '#EDD19C', '#ffffff'];
     const shapes = ['<i class="fa-solid fa-heart"></i>', '✨', '💖', '⭐'];
-    
+
     for (let i = 0; i < numParticles; i++) {
         const particle = document.createElement('div');
         particle.classList.add('click-particle');
-        
+
         // Randomly pick shape and color
         particle.innerHTML = shapes[Math.floor(Math.random() * shapes.length)];
         const color = colors[Math.floor(Math.random() * colors.length)];
-        
+
         const size = Math.random() * 1 + 0.6; // 0.6rem to 1.6rem
-        const angle = Math.random() * Math.PI * 2; 
+        const angle = Math.random() * Math.PI * 2;
         const distance = Math.random() * 80 + 30; // 30px to 110px spread
-        
+
         particle.style.left = e.clientX + 'px';
         particle.style.top = e.clientY + 'px';
         particle.style.fontSize = size + 'rem';
         particle.style.color = color;
-        
+
         particle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
-        particle.style.setProperty('--ty', Math.sin(angle) * distance - 40 + 'px'); 
+        particle.style.setProperty('--ty', Math.sin(angle) * distance - 40 + 'px');
         particle.style.setProperty('--rot', (Math.random() * 360 - 180) + 'deg');
-        
+
         document.body.appendChild(particle);
-        
+
         setTimeout(() => {
             particle.remove();
         }, 1000);
@@ -596,7 +634,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // 1. Initialize Cover Slideshow
     const slides = document.querySelectorAll('.cover-slide');
     let currentSlide = 0;
-    
+
     if (slides.length > 1) {
         setInterval(() => {
             slides[currentSlide].classList.remove('active');
@@ -620,19 +658,19 @@ document.addEventListener("DOMContentLoaded", function () {
     for (let i = 0; i < numHearts; i++) {
         setTimeout(() => {
             const heartIcons = [
-                '<i class="fa-solid fa-heart"></i>', 
+                '<i class="fa-solid fa-heart"></i>',
                 '<i class="fa-regular fa-heart"></i>',
-                '💖', 
-                '💕', 
-                '💗', 
-                '💓', 
+                '💖',
+                '💕',
+                '💗',
+                '💓',
                 '💝'
             ];
             const heartColors = ['#ff69b4', '#ff4d4d', '#ff99cc', '#fce4ec', '#ffb6c1', '#e04b8b'];
-            
+
             const heart = document.createElement('div');
             heart.classList.add('floating-heart');
-            
+
             let hintHtml = '';
             // ONLY show the hint explicitly on the very first heart
             if (i === 0) {
@@ -651,14 +689,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     ${hintHtml}
                 </div>
             `;
-            
+
             heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
             heart.style.left = Math.random() * 100 + 'vw';
             heart.style.animationDuration = (Math.random() * 5 + 7) + 's'; // 7 to 12 seconds
             const remSize = Math.random() * 2.5 + 2.5;
             heart.style.fontSize = remSize + 'rem'; // 2.5rem to 5rem
-            
-            heart.addEventListener('click', function(e) {
+
+            heart.addEventListener('click', function (e) {
                 heart.innerHTML = '';
                 heart.style.backgroundImage = "url('assets/CX7_7941.jpg')";
                 heart.style.backgroundSize = "cover";
@@ -677,16 +715,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 heart.style.maskRepeat = "no-repeat";
                 heart.style.maskSize = "contain";
             });
-            
+
             heartsContainer.appendChild(heart);
-            
+
             // Remove the heart from DOM after animation completes
             setTimeout(() => {
                 heart.remove();
             }, 13000); // Wait enough for slowest heart
         }, i * 150); // Faster stagger
     }
-    
+
     // Remove container after all hearts are done
     setTimeout(() => {
         heartsContainer.remove();
@@ -698,16 +736,16 @@ document.addEventListener("DOMContentLoaded", function () {
 // ==========================================
 
 // 1. Sparkle Cursor Trail
-document.addEventListener('mousemove', function(e) {
+document.addEventListener('mousemove', function (e) {
     if (Math.random() > 0.4) return; // Reduce density so it's not overwhelming
     createSparkle(e.clientX, e.clientY);
 });
 
-document.addEventListener('touchmove', function(e) {
+document.addEventListener('touchmove', function (e) {
     if (Math.random() > 0.3) return; // Reduce density for touch
     const touch = e.touches[0];
     createSparkle(touch.clientX, touch.clientY);
-}, {passive: true});
+}, { passive: true });
 
 function createSparkle(x, y) {
     const sparkle = document.createElement('div');
@@ -717,7 +755,7 @@ function createSparkle(x, y) {
     sparkle.style.top = y + 'px';
     sparkle.style.fontSize = (Math.random() * 0.8 + 0.4) + 'rem';
     sparkle.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
-    
+
     document.body.appendChild(sparkle);
     setTimeout(() => sparkle.remove(), 1000);
 }
@@ -734,34 +772,34 @@ function spawnPetal() {
     const petal = document.createElement('div');
     petal.className = 'falling-petal';
     // Elegant soft hearts instead of emojis
-    petal.innerHTML = '<i class="fa-solid fa-heart"></i>'; 
-    
+    petal.innerHTML = '<i class="fa-solid fa-heart"></i>';
+
     // Randomize starting position horizontally
     petal.style.left = Math.random() * 100 + 'vw';
-    
+
     // Vary size between tiny and small
     const size = Math.random() * 0.6 + 0.4;
     petal.style.fontSize = size + 'rem';
-    
+
     // Elegant colors: Soft whites, pinks, champagnes
     const colors = ['rgba(255,255,255,0.8)', 'rgba(255,182,193,0.7)', 'rgba(250,230,234,0.8)', 'rgba(237,209,156,0.6)'];
     petal.style.color = colors[Math.floor(Math.random() * colors.length)];
-    
+
     // Random CSS vars for dynamic sway and rotation
-    petal.style.setProperty('--sway', (Math.random() * 30 - 15) + 'vw'); 
-    petal.style.setProperty('--rotX', (Math.random() * 360 + 180) + 'deg'); 
-    
+    petal.style.setProperty('--sway', (Math.random() * 30 - 15) + 'vw');
+    petal.style.setProperty('--rotX', (Math.random() * 360 + 180) + 'deg');
+
     // Varying blur for out-of-focus dreamy look
     if (Math.random() > 0.4) {
         petal.style.filter = `blur(${Math.random() * 2.5}px)`;
     }
-    
+
     // Randomize animation duration
     const duration = Math.random() * 10 + 10; // 10s to 20s to fall gently
     petal.style.animationDuration = duration + 's';
-    
+
     document.body.appendChild(petal);
-    
+
     // Remove petal after it falls, and respawn a new one
     setTimeout(() => {
         if (document.body.contains(petal)) {
@@ -789,7 +827,7 @@ if (addCalendarBtn) {
             // Apple Devices rely entirely on .ics files for Apple Calendar
             // Instead of generating a blob (which Telegram blocks), we link to the actual invite.ics file!
             const icsUrl = new URL('invite.ics', window.location.href).href;
-            
+
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
                 window.Telegram.WebApp.openLink(icsUrl);
             } else {
@@ -800,13 +838,13 @@ if (addCalendarBtn) {
             const eventTitle = encodeURIComponent("សិរីមង្គលអាពាហ៍ពិពាហ៍ ឈុន & ម៉ីលិញ");
             const location = encodeURIComponent("គេហដ្ឋានខាងស្រី ភូមិថ្មី ឃុំលើកដែក ស្រុកកោះធំ ខេត្តកណ្តាល");
             const details = encodeURIComponent("យើងខ្ញុំពិតជាមានក្តីសោមនស្សរីករាយក្រៃលែងក្នុងការអបអរសាទរថ្ងៃដ៏ពិសេសនេះជាមួយអ្នក! សូមគោរពអញ្ជើញចូលរួមជាភ្ញៀវកិត្តិយស។");
-            
+
             // UTC times: 2026-04-25 17:00 ICT is 10:00 UTC, 21:00 ICT is 14:00 UTC
             const startDate = "20260425T100000Z";
             const endDate = "20260425T140000Z";
-            
+
             const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&dates=${startDate}/${endDate}&details=${details}&location=${location}&text=${eventTitle}`;
-            
+
             if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initData) {
                 window.Telegram.WebApp.openLink(googleCalendarUrl);
             } else {
@@ -834,7 +872,7 @@ function startEnvelopes() {
         { name: 'ឈុន & ម៉ីលិញ', message: 'អរគុណដែលបានក្លាយជាចំណែករឿងរ៉ាវនៃស្នេហារបស់យើង! 🥂' },
         { name: 'ឈុន & ម៉ីលិញ', message: 'សូមជូនពរអ្នកជួបតែសេចក្តីសុខ និងសុភមង្គល។' }
     ];
-    
+
     // Spawn the first envelope immediately
     if (envelopesSpawnedCount < 3) {
         const firstWish = predefinedWishes[Math.floor(Math.random() * predefinedWishes.length)];
@@ -849,7 +887,7 @@ function startEnvelopes() {
         }
 
         // Only a 40% chance to spawn one every 12 seconds
-        if(Math.random() > 0.4) return; 
+        if (Math.random() > 0.4) return;
 
         const randomWish = predefinedWishes[Math.floor(Math.random() * predefinedWishes.length)];
         createFloatingWish(randomWish.name, randomWish.message, false);
@@ -858,15 +896,15 @@ function startEnvelopes() {
         if (envelopesSpawnedCount >= 3) {
             clearInterval(envelopeInterval);
         }
-    }, 12000); 
+    }, 12000);
 }
 
 document.addEventListener("DOMContentLoaded", function () {
     // Check if the user already clicked "Open" previously in this session
     if (sessionStorage.getItem('inviteOpened') === '1') {
         startEnvelopes();
-    } 
-    
+    }
+
     // Add logic to start envelopes IMMEDIATELY AFTER the user opens the card
     const openInviteBtn = document.querySelector('.open-invite-btn');
     if (openInviteBtn) {
@@ -880,11 +918,11 @@ document.addEventListener("DOMContentLoaded", function () {
 function createFloatingWish(name, message, isFirst = false) {
     const wishEl = document.createElement('div');
     wishEl.className = 'floating-wish';
-    
+
     // Add balloon/envelope icon (removed bird emoji)
     const icons = ['🎈', '💌', '💝', '💖'];
     const randomIcon = icons[Math.floor(Math.random() * icons.length)];
-    
+
     let hintHtml = '';
     // ONLY show the text hint explicitly on the very first envelope
     if (isFirst) {
@@ -894,7 +932,7 @@ function createFloatingWish(name, message, isFirst = false) {
             </div>
         `;
     }
-    
+
     wishEl.innerHTML = `
         <div class="wish-icon attention-wiggle">
             ${randomIcon}
@@ -903,65 +941,65 @@ function createFloatingWish(name, message, isFirst = false) {
         <div class="wish-author">ពី៖ ${name}</div>
         ${hintHtml}
     `;
-    
+
     // Keep it entirely on screen regardless of phone width (180px is approx width)
     const maxLeft = window.innerWidth > 220 ? window.innerWidth - 200 : 10;
-    wishEl.style.left = (Math.random() * maxLeft + 10) + 'px'; 
-    
+    wishEl.style.left = (Math.random() * maxLeft + 10) + 'px';
+
     // First envelope floats faster to catch attention (e.g., 8 to 12s). 
     // Later background envelopes stay dreamy and slow (25 to 35s)
-    const floatTime = isFirst ? (Math.random() * 4 + 8) : (Math.random() * 10 + 25); 
+    const floatTime = isFirst ? (Math.random() * 4 + 8) : (Math.random() * 10 + 25);
     wishEl.style.animationDuration = floatTime + 's';
-    
+
     // Interactive drag and pop logic
     let isDragging = false;
     let hasMoved = false;
     let startX = 0, startY = 0;
     let initialLeft = 0, initialTop = 0;
-    
+
     const startDrag = (x, y) => {
-        if(wishEl.dataset.dismissed) return;
+        if (wishEl.dataset.dismissed) return;
         isDragging = true;
         hasMoved = false;
         startX = x;
         startY = y;
-        
+
         const rect = wishEl.getBoundingClientRect();
         initialLeft = rect.left;
         initialTop = rect.top;
-        
+
         // Freeze float animation to follow finger/mouse
         wishEl.style.animation = 'none';
         wishEl.style.bottom = 'auto'; // Remove bottom pinning
         wishEl.style.left = initialLeft + 'px';
         wishEl.style.top = initialTop + 'px';
-        
+
         wishEl.style.transition = 'none'; // Instant follow
         wishEl.style.transform = 'scale(1.05)'; // Slight lift effect when grabbed
         wishEl.style.zIndex = '1000000'; // Bring to front
     };
-    
+
     const doDrag = (x, y) => {
-        if(!isDragging) return;
-        
+        if (!isDragging) return;
+
         const dx = x - startX;
         const dy = y - startY;
-        
+
         if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
             hasMoved = true;
         }
-        
+
         wishEl.style.left = (initialLeft + dx) + 'px';
         wishEl.style.top = (initialTop + dy) + 'px';
     };
-    
+
     const endDrag = () => {
-        if(!isDragging) return;
+        if (!isDragging) return;
         isDragging = false;
-        
+
         wishEl.style.transform = 'scale(1)';
         wishEl.style.transition = 'transform 0.4s ease, opacity 0.4s ease'; // restore
-        
+
         if (!hasMoved) {
             // Tap without drag -> POP!
             popWish();
@@ -971,27 +1009,27 @@ function createFloatingWish(name, message, isFirst = false) {
             wishEl.style.top = (window.innerHeight + 200) + 'px';
             wishEl.style.opacity = '0';
             setTimeout(() => {
-                if(document.body.contains(wishEl)) wishEl.remove();
+                if (document.body.contains(wishEl)) wishEl.remove();
             }, 1500);
         }
     };
-    
+
     const popWish = () => {
-        if(wishEl.dataset.dismissed) return;
+        if (wishEl.dataset.dismissed) return;
         wishEl.dataset.dismissed = "true";
-        
+
         let rect = wishEl.getBoundingClientRect();
-        
+
         // Fast pop transform
         wishEl.style.transform = 'scale(1.4)';
         wishEl.style.opacity = '0';
-        
+
         // Create 6 magic burst particles
-        for(let i=0; i<6; i++) {
+        for (let i = 0; i < 6; i++) {
             const particle = document.createElement('div');
             particle.className = 'click-particle';
             particle.innerHTML = '✨';
-            particle.style.left = (rect.left + rect.width/2) + 'px';
+            particle.style.left = (rect.left + rect.width / 2) + 'px';
             particle.style.top = (rect.top) + 'px';
             particle.style.color = '#e04b8b';
             particle.style.fontSize = '1.8rem';
@@ -1001,21 +1039,21 @@ function createFloatingWish(name, message, isFirst = false) {
             particle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
             particle.style.setProperty('--rot', (Math.random() * 360) + 'deg');
             document.body.appendChild(particle);
-            setTimeout(() => { if(document.body.contains(particle)) particle.remove(); }, 1000);
+            setTimeout(() => { if (document.body.contains(particle)) particle.remove(); }, 1000);
         }
 
         setTimeout(() => {
-            if(document.body.contains(wishEl)) wishEl.remove();
+            if (document.body.contains(wishEl)) wishEl.remove();
         }, 400);
     };
 
     // Attach listeners
     wishEl.addEventListener('mousedown', e => startDrag(e.clientX, e.clientY));
-    wishEl.addEventListener('touchstart', e => startDrag(e.touches[0].clientX, e.touches[0].clientY), {passive: true});
+    wishEl.addEventListener('touchstart', e => startDrag(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
 
     // We must catch move/up on the window so if the mouse/finger moves fast it doesn't lose the element
     const onMove = (e) => {
-        if(isDragging) {
+        if (isDragging) {
             const clientX = e.touches ? e.touches[0].clientX : e.clientX;
             const clientY = e.touches ? e.touches[0].clientY : e.clientY;
             doDrag(clientX, clientY);
@@ -1025,13 +1063,13 @@ function createFloatingWish(name, message, isFirst = false) {
 
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onEnd);
-    window.addEventListener('touchmove', onMove, {passive: false});
+    window.addEventListener('touchmove', onMove, { passive: false });
     window.addEventListener('touchend', onEnd);
-    
+
     document.body.appendChild(wishEl);
-    
+
     setTimeout(() => {
-        if(document.body.contains(wishEl)) {
+        if (document.body.contains(wishEl)) {
             wishEl.remove();
         }
     }, floatTime * 1000);
@@ -1040,17 +1078,17 @@ function createFloatingWish(name, message, isFirst = false) {
 // ==========================================
 // SECURITY: Disable Copy, Cut, and Right-Clicking
 // ==========================================
-document.addEventListener('contextmenu', function(e) {
+document.addEventListener('contextmenu', function (e) {
     // Only allow context menu if they happen to be in an input field (none on this site currently)
-    if(!e.target.closest('input') && !e.target.closest('textarea')) {
+    if (!e.target.closest('input') && !e.target.closest('textarea')) {
         e.preventDefault();
     }
 });
 
-document.addEventListener('copy', function(e) {
+document.addEventListener('copy', function (e) {
     e.preventDefault();
 });
 
-document.addEventListener('cut', function(e) {
+document.addEventListener('cut', function (e) {
     e.preventDefault();
 });
