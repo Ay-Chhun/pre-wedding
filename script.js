@@ -331,10 +331,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const img = item.querySelector('img');
                 if (img) img.removeAttribute('loading');
 
-                // Subtle delay for staggered loading feel (60ms for more 'premium' reveal)
+                // Subtle delay for staggered loading feel (70ms for more 'premium' reveal)
                 setTimeout(() => {
-                    item.classList.add('visible');
-                }, i * 60);
+                    requestAnimationFrame(() => {
+                        item.classList.add('visible');
+                    });
+                }, i * 70);
             }
 
             // Check if there are any hidden extras remaining

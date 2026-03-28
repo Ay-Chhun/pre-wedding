@@ -975,35 +975,33 @@ img {
 @keyframes itemReveal {
     0% {
         opacity: 0;
-        transform: translateY(60px) scale(0.85);
-        filter: blur(5px);
+        transform: translateY(40px) scale(0.92);
+        /* Clean and Fast: No Blur during animation! */
     }
-
     100% {
         opacity: 1;
         transform: translateY(0) scale(1);
-        filter: blur(0);
     }
 }
 
 .gallery-extra {
     display: none !important;
-    /* Back to none to fix the lines in the screenshot */
 }
 
 .gallery-extra.show {
     display: block !important;
     padding: 3px !important;
     margin-bottom: 12px !important;
-    /* We use visibility: hidden initially so the .visible class can trigger the entrance */
-    visibility: hidden;
-    height: auto;
-    width: auto;
+    opacity: 0;
+    /* Hidden before reveal */
+    contain: content;
+    /* High-Performance Rendering Boundary */
+    pointer-events: none;
 }
 
 .gallery-extra.visible {
-    visibility: visible;
-    animation: itemReveal 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    pointer-events: auto;
+    animation: itemReveal 0.7s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
 }
 
 /* Lightbox */
