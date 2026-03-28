@@ -217,8 +217,23 @@ document.addEventListener('DOMContentLoaded', () => {
     galleryItems.forEach((item, index) => {
         const img = item.querySelector('img');
         if (img) {
+            // Function to reveal image once fully loaded or decoded
+            const revealImage = () => {
+                img.classList.add('loaded');
+                item.classList.add('loaded'); // Stop shimmer on the parent too
+            };
+
+            if (img.complete) {
+                revealImage();
+            } else {
+                img.addEventListener('load', revealImage);
+                // Also handle errors gracefully
+                img.addEventListener('error', () => {
+                   item.classList.add('loaded'); // Stop shimmer even if error
+                });
+            }
+
             galleryImages.push(img.getAttribute('src'));
-            // Override the hardcoded HTML completely to prevent array mismatches
             item.onclick = (e) => {
                 e.preventDefault();
                 openLightbox(index);
@@ -271,46 +286,77 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         showMoreBtn.addEventListener('click', () => {
-            const extras = document.querySelectorAll('.gallery-extra');
-            extras.forEach((item, i) => {
-                // Use the class defined in CSS for better layout handling
+            const hiddenExtras = Array.from(document.querySelectorAll('.gallery-extra')).filter(el => !el.classList.contains('show'));
+            const imagesToShow = 15;
+            
+            // Only show the next 15 hidden items
+            for (let i = 0; i < imagesToShow && i < hiddenExtras.length; i++) {
+                const item = hiddenExtras[i];
                 item.classList.add('show');
-                // Minimal delay to allow browser to calculate layout before starting fade-in
+                // Subtle delay for staggered loading feel
                 setTimeout(() => {
                     item.classList.add('visible');
-                }, i * 30); // Faster stagger for better feel
-            });
-            // Fade out the button container
-            showMoreBtn.parentElement.style.opacity = '0';
-            setTimeout(() => {
-                showMoreBtn.parentElement.style.display = 'none';
-            }, 400);
+                }, i * 35); 
+            }
+
+            // Check if there are any hidden extras remaining
+            const remaining = Array.from(document.querySelectorAll('.gallery-extra')).filter(el => !el.classList.contains('show'));
+            if (remaining.length === 0) {
+                // All photos are out! Fade out the button
+                showMoreBtn.parentElement.style.opacity = '0';
+                setTimeout(() => {
+                    showMoreBtn.parentElement.style.display = 'none';
+                }, 400);
+            } else {
+                // Update button text to show remaining count if desired? 
+                // Let's keep it simple for now as requested.
+            }
         });
     }
 });
 
-// Build thumbnails
+let thumbnailsBuilt = false;
+
 function buildThumbnails() {
+    if (thumbnailsBuilt) return; // DON'T REBUILD IF ALREADY IN DOM
     const container = document.getElementById('lightbox-thumbnails');
     if (!container) return;
-    container.innerHTML = '';
+    
+    // Efficiently batch the DOM appends
+    const fragment = document.createDocumentFragment();
     galleryImages.forEach((src, i) => {
         const thumb = document.createElement('img');
         thumb.src = src;
+        thumb.loading = 'lazy'; // Performance win!
+        thumb.decoding = 'async';
         thumb.className = 'lightbox-thumb' + (i === currentLightboxIndex ? ' active' : '');
-        thumb.onclick = () => goToLightbox(i);
-        container.appendChild(thumb);
+        thumb.onclick = (e) => {
+            e.stopPropagation();
+            goToLightbox(i);
+        };
+        fragment.appendChild(thumb);
     });
+    container.appendChild(fragment);
+    thumbnailsBuilt = true;
 }
 
 function updateLightbox() {
     const img = document.getElementById('lightbox-img');
     const counter = document.getElementById('lightbox-counter');
-    if (img) img.src = galleryImages[currentLightboxIndex];
+    if (img) {
+        img.src = galleryImages[currentLightboxIndex];
+        img.decoding = 'async'; // Super smooth decoding
+    }
     if (counter) counter.textContent = `${currentLightboxIndex + 1} / ${galleryImages.length}`;
-    // Update active thumbnail
-    document.querySelectorAll('.lightbox-thumb').forEach((t, i) => {
-        t.classList.toggle('active', i === currentLightboxIndex);
+    
+    // Update active thumbnail and auto-scroll it into view
+    const thumbs = document.querySelectorAll('.lightbox-thumb');
+    thumbs.forEach((t, i) => {
+        const isActive = (i === currentLightboxIndex);
+        t.classList.toggle('active', isActive);
+        if (isActive) {
+            t.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
     });
 }
 
@@ -320,7 +366,10 @@ function openLightbox(index) {
     if (lightbox) {
         lightbox.classList.add('active');
         document.body.style.overflow = 'hidden';
-        buildThumbnails();
+        
+        // Build them only once in background
+        if (!thumbnailsBuilt) buildThumbnails();
+        
         updateLightbox();
     }
 }

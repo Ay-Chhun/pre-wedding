@@ -241,7 +241,7 @@ img {
 
 .connector-text::before,
 .connector-text::after {
-    content: "♥";
+    content: "â™¥";
     /* Hearts */
     color: var(--gold);
     font-size: 0.8rem;
@@ -710,21 +710,21 @@ img {
 .gallery-item {
     flex: 0 0 calc(50% - 5px);
     max-width: calc(50% - 5px);
-    aspect-ratio: 4 / 5;
+    aspect-ratio: 4 / 5; 
     border-radius: 12px;
     overflow: hidden;
-    background: #fff9f0; /* Soft Champagne Base */
     padding: 3px;
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
     cursor: pointer;
     position: relative;
-    transition: all 0.4s ease;
-    margin-bottom: 10px;
+    transition: all 0.45s cubic-bezier(0.165, 0.84, 0.44, 1);
+    margin-bottom: 12px;
+    background: #fff9f0; /* Warm Base */
     background-size: cover;
     background-position: center;
 }
 
-/* Warm Blurred Texture Overlay */
+/* Dreamy Studio Diffusion Backdrop (60fps Optimized) */
 .gallery-item::before {
     content: '';
     position: absolute;
@@ -735,13 +735,14 @@ img {
     background: inherit;
     background-size: cover;
     background-position: center;
-    filter: blur(25px) sepia(0.2) brightness(1.1); 
-    transform: scale(1.2);
+    filter: blur(10px) sepia(0.2) saturate(1.2) brightness(1.05); /* Luminous & Vibrant */
+    transform: scale(1.15);
     z-index: 1;
-    opacity: 0.5;
+    opacity: 0.85;
+    display: block !important;
 }
 
-/* Silk Shine & Inner Frame Layer */
+/* Silk Shine & Luxury Gold Framing */
 .gallery-item::after {
     content: '';
     position: absolute;
@@ -751,23 +752,27 @@ img {
     bottom: 0;
     background: linear-gradient(135deg, 
         rgba(255, 255, 255, 0.5) 0%, 
-        rgba(255, 248, 230, 0.2) 50%, 
-        rgba(255, 255, 255, 0.5) 100%);
-    border: 0.5px solid rgba(206, 157, 77, 0.3); /* Subtle Gold Frame */
+        transparent 50%, 
+        rgba(255, 255, 255, 0.2) 100%);
+    border: 0.8px solid rgba(212, 175, 55, 0.35); /* Elegant Gold Frame */
+    border-radius: 10px;
     margin: 3px;
-    border-radius: 9px;
     pointer-events: none;
     z-index: 2;
+    box-shadow: inset 0 0 15px rgba(255, 249, 230, 0.3);
+}
+
+.gallery-item.loaded {
+    animation: none !important;
 }
 
 .gallery-item:hover {
-    transform: translateY(-12px);
-    box-shadow: 0 25px 50px rgba(224, 75, 139, 0.2);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 .gallery-item:hover::after {
-    border-color: var(--gold);
-    box-shadow: 0 0 15px rgba(237, 209, 156, 0.3);
+    border-color: rgba(212, 175, 55, 0.6);
 }
 
 .gallery-item img {
@@ -777,9 +782,24 @@ img {
     display: block;
     position: relative;
     z-index: 3;
-    border: 0.5px solid rgba(212, 175, 55, 0.3); /* Ultra-thin Gold Inner Outline */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); /* Soft depth for the photo */
-    transition: all 0.6s ease;
+    border: 0.5px solid rgba(255, 255, 255, 0.2); 
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transition: opacity 0.8s ease-out, transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.gallery-item img.loaded {
+    opacity: 1;
+}
+
+.gallery-item:hover img.loaded {
+    transform: scale(1.03);
+    filter: brightness(1.02);
+}
+
+@keyframes skeleton-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
 }
 
 .gallery-item:hover img {
@@ -874,12 +894,15 @@ img {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.95);
+    background: rgba(0, 0, 0, 0.98);
     z-index: 9999;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     animation: fadeIn 0.3s ease;
+    will-change: opacity; /* GPU Performance! */
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 .lightbox-overlay.active {
