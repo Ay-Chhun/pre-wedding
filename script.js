@@ -735,17 +735,34 @@ document.addEventListener("DOMContentLoaded", function () {
 // NEW EFFECTS: Sparkles & Petals
 // ==========================================
 
-// 1. Sparkle Cursor Trail
-document.addEventListener('mousemove', function (e) {
-    if (Math.random() > 0.4) return; // Reduce density so it's not overwhelming
-    createSparkle(e.clientX, e.clientY);
-});
+// 1. Sparkle Cursor Trail (Optimized with throttling)
+let lastSparkleTime = 0;
+const sparkleThrottle = 60; // Create sparkle every 60ms max
 
-document.addEventListener('touchmove', function (e) {
-    if (Math.random() > 0.3) return; // Reduce density for touch
+function handleMouseMove(e) {
+    const now = Date.now();
+    if (now - lastSparkleTime < sparkleThrottle) return;
+    lastSparkleTime = now;
+    
+    // Use requestAnimationFrame for smooth DOM injection
+    requestAnimationFrame(() => {
+        createSparkle(e.clientX, e.clientY);
+    });
+}
+
+function handleTouchMove(e) {
+    const now = Date.now();
+    if (now - lastSparkleTime < sparkleThrottle) return;
+    lastSparkleTime = now;
+    
     const touch = e.touches[0];
-    createSparkle(touch.clientX, touch.clientY);
-}, { passive: true });
+    requestAnimationFrame(() => {
+        createSparkle(touch.clientX, touch.clientY);
+    });
+}
+
+document.addEventListener('mousemove', handleMouseMove, { passive: true });
+document.addEventListener('touchmove', handleTouchMove, { passive: true });
 
 function createSparkle(x, y) {
     const sparkle = document.createElement('div');
@@ -757,14 +774,19 @@ function createSparkle(x, y) {
     sparkle.style.animationDuration = (Math.random() * 0.5 + 0.5) + 's';
 
     document.body.appendChild(sparkle);
-    setTimeout(() => sparkle.remove(), 1000);
+    // Cleanup using a single shared timer or animation end
+    setTimeout(() => {
+        if (sparkle.parentNode) sparkle.remove();
+    }, 800);
 }
 
 // 2. Elegant Falling Hearts (Depth of Field Effect)
 function createFallingPetals() {
-    const numPetals = 25; // More petals for a fuller effect
+    const numPetals = 20; // Slightly reduced for better performance
     for (let i = 0; i < numPetals; i++) {
-        setTimeout(spawnPetal, Math.random() * 8000);
+        // Spread the spawns over 12 seconds to keep it buttery smooth
+        const initialDelay = Math.random() * 12000;
+        setTimeout(spawnPetal, initialDelay);
     }
 }
 
