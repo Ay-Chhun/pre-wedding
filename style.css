@@ -334,8 +334,10 @@ img {
     background-position: center;
     opacity: 0;
     transition: opacity 2s ease-in-out, transform 8s linear;
-    transform: scale(1.05);
-    /* Slight initial scale for Ken Burns effect */
+    transform: scale(1.05) translateZ(0);
+    will-change: opacity, transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 .cover-slide.active {
@@ -933,6 +935,7 @@ img {
     gap: 12px;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    touch-action: manipulation;
 }
 
 #show-more-btn:hover {

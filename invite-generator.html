@@ -75,9 +75,15 @@
     </div>
 
     <div class="config">
-        <strong>Website URL:</strong>
-        <input type="text" id="site-url" value="https://yourwedding.com" placeholder="e.g., https://kaly-rak.com">
-        <button id="refresh-btn" class="copy-btn" style="background:var(--gold)">Update All Links</button>
+        <div>
+            <strong>Website URL:</strong><br>
+            <input type="text" id="site-url" value="https://yourwedding.vercel.app" placeholder="e.g., https://wedding.com">
+        </div>
+        <div>
+            <strong>TG Bot/App Link:</strong><br>
+            <input type="text" id="tg-url" value="https://t.me/WeddingBot/invitation" placeholder="e.g., https://t.me/WeddingBot/app">
+        </div>
+        <button id="refresh-btn" class="copy-btn" style="background:var(--gold); margin-top: 15px;">Update All Links</button>
     </div>
 
     <table class="guest-table" id="guest-list">
@@ -85,8 +91,9 @@
             <tr>
                 <th>No</th>
                 <th>Guest Name</th>
-                <th>Personal Invite Link</th>
-                <th>Action</th>
+                <th>Web Link (Browser)</th>
+                <th>Telegram Link (Mini App)</th>
+                <th>Quick Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -130,15 +137,24 @@
         }
 
         function addGuestRow(id, name) {
-            const baseUrl = siteUrlInput.value.replace(/\/$/, ""); // Remove trailing slash
-            const fullUrl = `${baseUrl}/index.html?guest=${id}`;
+            const baseUrl = siteUrlInput.value.replace(/\/$/, "");
+            const webUrl = `${baseUrl}/index.html?guest=${id}`;
+            
+            const tgBase = document.getElementById('tg-url').value.replace(/\/$/, "");
+            const tgUrl = `${tgBase}?startapp=${id}`;
             
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${id}</td>
                 <td><strong>${name}</strong></td>
-                <td><span class="link-text">${fullUrl}</span></td>
-                <td><button class="copy-btn" onclick="copyLink(this, '${fullUrl}')">Copy Link</button></td>
+                <td><span class="link-text">${webUrl}</span></td>
+                <td><span class="link-text">${tgUrl}</span></td>
+                <td>
+                    <div style="display:flex; gap:5px;">
+                        <button class="copy-btn" onclick="copyLink(this, '${webUrl}')">Copy Web</button>
+                        <button class="copy-btn" style="background:#0088cc" onclick="copyLink(this, '${tgUrl}')">Copy Telegram</button>
+                    </div>
+                </td>
             `;
             tableBody.appendChild(tr);
         }

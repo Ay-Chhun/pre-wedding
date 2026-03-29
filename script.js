@@ -463,7 +463,23 @@ document.getElementById('lightbox')?.addEventListener('touchend', (e) => {
 // Guest Name Loader
 document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
-    const guestId = urlParams.get('guest');
+    
+    // Ensure WebApp object is fresh
+    const CurrentWebApp = window.Telegram?.WebApp || WebApp;
+    
+    // 1. Try ?guest=... (Standard URL)
+    let guestId = urlParams.get('guest');
+    
+    // 2. Try ?tgWebAppStartParam=... (Sometimes passed by TG directly in URL)
+    if (!guestId) {
+        guestId = urlParams.get('tgWebAppStartParam');
+    }
+
+    // 3. Fallback to Telegram WebApp initData (The official startapp method)
+    if (!guestId && CurrentWebApp && CurrentWebApp.initDataUnsafe?.start_param) {
+        guestId = CurrentWebApp.initDataUnsafe.start_param;
+        console.log("Telegram WebApp start_param detected:", guestId);
+    }
 
     const updateGuestUI = (name) => {
         const guestEl = document.querySelector('.guest-name');
@@ -475,29 +491,29 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     if (guestId) {
-        // Use encodeURIComponent just in case, though 'guest list.csv' is usually handle by browser encoding
+        console.log("Searching for Guest ID:", guestId);
+        // Using relative path to guest list
         fetch('guest%20list.csv')
             .then(response => {
-                if (!response.ok) throw new Error("Network response was not ok");
+                if (!response.ok) throw new Error("Could not load guest list CSV");
                 return response.text();
             })
             .then(data => {
-                const rows = data.split('\n');
+                const rows = data.split(/\r?\n/); // Handle both \n and \r\n
                 let foundName = null;
 
                 for (let i = 1; i < rows.length; i++) {
                     const row = rows[i].trim();
                     if (!row) continue;
 
-                    // Safe split by first comma
                     const firstCommaIndex = row.indexOf(',');
                     if (firstCommaIndex === -1) continue;
 
                     const id = row.substring(0, firstCommaIndex).trim();
-                    // Check if ID matches
-                    if (id == guestId) {
+                    // Robust check: matches number OR string
+                    if (id == guestId || id.replace(/[^\d]/g, '') === String(guestId).replace(/[^\d]/g, '')) {
                         foundName = row.substring(firstCommaIndex + 1).trim();
-                        // Check for quotes
+                        // Handle CSV quoting
                         if (foundName.startsWith('"') && foundName.endsWith('"')) {
                             foundName = foundName.slice(1, -1);
                         }
@@ -507,21 +523,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 if (foundName) {
+                    console.log("Found Guest:", foundName);
                     updateGuestUI(foundName);
                     trackLaunch(foundName);
                 } else {
-                    trackLaunch(); // Fallback tracking
+                    console.warn("Guest ID not found in CSV:", guestId);
+                    // If not found in CSV, we still track the launch
+                    trackLaunch();
+                    // If guestId is a name itself (not ID), maybe show it?
+                    if (isNaN(guestId) && guestId.length > 2) {
+                        updateGuestUI(guestId.replace(/_/g, ' '));
+                    }
                 }
             })
             .catch(error => {
                 console.error('Error loading guest list:', error);
-                trackLaunch(); // Fallback tracking if fetch fails
-                if (window.location.protocol === 'file:') {
-                    alert("Guest Name Feature requires a local server due to browser security.\nPlease use: http://localhost:8000/index.html?guest=" + guestId);
-                }
+                trackLaunch(); // Fallback tracking
             });
-    } else if (WebApp && WebApp.initDataUnsafe && WebApp.initDataUnsafe.user) {
-        const user = WebApp.initDataUnsafe.user;
+    } else if (CurrentWebApp && CurrentWebApp.initDataUnsafe?.user) {
+        // Fallback to Telegram account name if no parameter provided
+        const user = CurrentWebApp.initDataUnsafe.user;
         const fullName = [user.first_name, user.last_name].filter(Boolean).join(' ');
         if (fullName) {
             updateGuestUI(fullName);
@@ -530,7 +551,6 @@ document.addEventListener("DOMContentLoaded", function () {
             trackLaunch();
         }
     } else {
-        // Just track anonymous launch if nothing else
         trackLaunch();
     }
 });
@@ -638,11 +658,36 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentSlide = 0;
 
     if (slides.length > 1) {
-        setInterval(() => {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
-        }, 5000); // Change image every 5 seconds
+        let slideshowInterval;
+        const startSlideshow = () => {
+            if (slideshowInterval) return;
+            slideshowInterval = setInterval(() => {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }, 5000);
+        };
+        const stopSlideshow = () => {
+            clearInterval(slideshowInterval);
+            slideshowInterval = null;
+        };
+
+        // Battery-Saving Intersection Observer: ONLY run slideshow when visible
+        const coverSection = document.querySelector('.cover-card');
+        if (coverSection) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        requestAnimationFrame(startSlideshow);
+                    } else {
+                        stopSlideshow();
+                    }
+                });
+            }, { threshold: 0.1 });
+            observer.observe(coverSection);
+        } else {
+            startSlideshow(); // Fallback if no container found
+        }
     }
 
     const numHearts = 7; // Reduced quantity for a cleaner look (around 5-8)
@@ -783,12 +828,20 @@ function createSparkle(x, y) {
 }
 
 // 2. Elegant Falling Hearts (Depth of Field Effect)
+let isScreenActive = true;
+const coverObserver = new IntersectionObserver((entries) => {
+    isScreenActive = entries[0].isIntersecting;
+}, { threshold: 0.1 });
+const coverEl = document.querySelector('.cover-card');
+if (coverEl) coverObserver.observe(coverEl);
+
 function createFallingPetals() {
-    const numPetals = 20; // Slightly reduced for better performance
+    const numPetals = 15; // Balanced for high luxury + cool device
     for (let i = 0; i < numPetals; i++) {
-        // Spread the spawns over 12 seconds to keep it buttery smooth
-        const initialDelay = Math.random() * 12000;
-        setTimeout(spawnPetal, initialDelay);
+        // Spread the spawns over 12 seconds
+        setTimeout(() => {
+            if (isScreenActive) spawnPetal();
+        }, Math.random() * 12000);
     }
 }
 
