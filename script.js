@@ -87,7 +87,7 @@ function initGuestLoader() {
                     if (!row) continue;
                     const parts = row.split(',');
                     const id = parts[0].trim();
-                    const isMatched = targetIds.some(t => id == t || id.replace(/[^\d]/g,'') === String(t).replace(/[^\d]/g,''));
+                    const isMatched = targetIds.some(t => id === String(t));
                     if (isMatched) {
                         foundName = parts[1].trim();
                         if (foundName.startsWith('"') && foundName.endsWith('"')) foundName = foundName.slice(1, -1);
