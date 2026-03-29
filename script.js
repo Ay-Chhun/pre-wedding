@@ -482,18 +482,19 @@ document.addEventListener("DOMContentLoaded", function () {
         return val;
     };
 
-    // 1. Try ?guest=... (Standard URL)
-    let guestId = tryDecode(urlParams.get('guest'));
-    
-    // 2. Try ?tgWebAppStartParam=... (Sometimes passed by TG directly in URL)
-    if (!guestId) {
-        guestId = tryDecode(urlParams.get('tgWebAppStartParam'));
-    }
+    // 1. Get raw values from all sources
+    const rawGuest = urlParams.get('guest');
+    const rawTg = urlParams.get('tgWebAppStartParam');
+    const rawApp = CurrentWebApp?.initDataUnsafe?.start_param;
 
-    // 3. Fallback to Telegram WebApp initData (The official startapp method)
-    if (!guestId && CurrentWebApp && CurrentWebApp.initDataUnsafe?.start_param) {
-        guestId = tryDecode(CurrentWebApp.initDataUnsafe.start_param);
-        console.log("Telegram Deep Link detected:", guestId);
+    let guestId = rawGuest || rawTg || rawApp;
+
+    // We'll perform the decode attempt INSIDE the fetch loop for maximum reliability
+    const targetIds = [];
+    if (guestId) {
+        targetIds.push(guestId); // Try raw first
+        const decoded = tryDecode(guestId);
+        if (decoded !== guestId) targetIds.push(decoded); // Try decoded second
     }
 
     const updateGuestUI = (name) => {
@@ -505,16 +506,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    if (guestId) {
-        console.log("Searching for Guest ID:", guestId);
-        // Using relative path to guest list
+    if (targetIds.length > 0) {
+        console.log("Searching for Guest IDs:", targetIds);
         fetch('guest%20list.csv')
             .then(response => {
                 if (!response.ok) throw new Error("Could not load guest list CSV");
                 return response.text();
             })
             .then(data => {
-                const rows = data.split(/\r?\n/); // Handle both \n and \r\n
+                const rows = data.split(/\r?\n/);
                 let foundName = null;
 
                 for (let i = 1; i < rows.length; i++) {
@@ -526,7 +526,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     const id = row.substring(0, firstCommaIndex).trim();
                     // Robust check: matches number OR string
-                    if (id == guestId || id.replace(/[^\d]/g, '') === String(guestId).replace(/[^\d]/g, '')) {
+                    const isMatched = targetIds.some(target => 
+                        id == target || id.replace(/[^\d]/g, '') === String(target).replace(/[^\d]/g, '')
+                    );
+
+                    if (isMatched) {
                         foundName = row.substring(firstCommaIndex + 1).trim();
                         // Handle CSV quoting
                         if (foundName.startsWith('"') && foundName.endsWith('"')) {
@@ -542,12 +546,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     updateGuestUI(foundName);
                     trackLaunch(foundName);
                 } else {
-                    console.warn("Guest ID not found in CSV:", guestId);
+                    console.warn("Guest IDs not found in CSV:", targetIds);
                     // If not found in CSV, we still track the launch
                     trackLaunch();
-                    // If guestId is a name itself (not ID), maybe show it?
-                    if (isNaN(guestId) && guestId.length > 2) {
-                        updateGuestUI(guestId.replace(/_/g, ' '));
+                    // If first ID is a name itself (not ID), maybe show it?
+                    const firstId = targetIds[0];
+                    if (isNaN(firstId) && firstId.length > 2) {
+                        updateGuestUI(firstId.replace(/_/g, ' '));
                     }
                 }
             })
