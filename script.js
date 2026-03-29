@@ -521,17 +521,23 @@ document.addEventListener("DOMContentLoaded", function () {
                     const row = rows[i].trim();
                     if (!row) continue;
 
-                    const firstCommaIndex = row.indexOf(',');
-                    if (firstCommaIndex === -1) continue;
-
-                    const id = row.substring(0, firstCommaIndex).trim();
-                    // Robust check: matches number OR string
+                    // Find first comma (after ID) and second comma (before links)
+                    const firstComma = row.indexOf(',');
+                    const secondComma = row.indexOf(',', firstComma + 1);
+                    
+                    const id = row.substring(0, firstComma).trim();
                     const isMatched = targetIds.some(target => 
                         id == target || id.replace(/[^\d]/g, '') === String(target).replace(/[^\d]/g, '')
                     );
 
                     if (isMatched) {
-                        foundName = row.substring(firstCommaIndex + 1).trim();
+                        // Get only the part between the first and second comma
+                        if (secondComma !== -1) {
+                            foundName = row.substring(firstComma + 1, secondComma).trim();
+                        } else {
+                            foundName = row.substring(firstComma + 1).trim();
+                        }
+                        
                         // Handle CSV quoting
                         if (foundName.startsWith('"') && foundName.endsWith('"')) {
                             foundName = foundName.slice(1, -1);
