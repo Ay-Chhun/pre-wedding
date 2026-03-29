@@ -467,18 +467,33 @@ document.addEventListener("DOMContentLoaded", function () {
     // Ensure WebApp object is fresh
     const CurrentWebApp = window.Telegram?.WebApp || WebApp;
     
+    // Function to try to decode Base64 safely
+    const tryDecode = (val) => {
+        if (!val) return val;
+        try {
+            // Check if it's base64 (very basic check) - usually 4+ chars for IDs
+            if (val.length > 1 && /^[a-zA-Z0-9+/=]+$/.test(val)) {
+                // Fix missing padding if needed
+                let padded = val;
+                while (padded.length % 4 !== 0) padded += '=';
+                return atob(padded);
+            }
+        } catch (e) { }
+        return val;
+    };
+
     // 1. Try ?guest=... (Standard URL)
-    let guestId = urlParams.get('guest');
+    let guestId = tryDecode(urlParams.get('guest'));
     
     // 2. Try ?tgWebAppStartParam=... (Sometimes passed by TG directly in URL)
     if (!guestId) {
-        guestId = urlParams.get('tgWebAppStartParam');
+        guestId = tryDecode(urlParams.get('tgWebAppStartParam'));
     }
 
     // 3. Fallback to Telegram WebApp initData (The official startapp method)
     if (!guestId && CurrentWebApp && CurrentWebApp.initDataUnsafe?.start_param) {
-        guestId = CurrentWebApp.initDataUnsafe.start_param;
-        console.log("Telegram WebApp start_param detected:", guestId);
+        guestId = tryDecode(CurrentWebApp.initDataUnsafe.start_param);
+        console.log("Telegram Deep Link detected:", guestId);
     }
 
     const updateGuestUI = (name) => {
