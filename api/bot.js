@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     if (message && message.text && message.text.startsWith('/start')) {
         const chatId = message.chat.id;
         const text = message.text;
-        
+
         // 1. Extract the deep link parameter (the hashed ID)
         // Format: /start <value>
         const parts = text.split(' ');
@@ -20,8 +20,8 @@ export default async function handler(req, res) {
 
         // 2. Prepare the Telegram API request
         // Replace with your real BOT_TOKEN (you should set this in Vercel Environment Variables)
-        const BOT_TOKEN = process.env.BOT_TOKEN;
-        
+        const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
+
         // Link to your Mini App (replace with your Bot username & App short name)
         const appUrl = `https://t.me/CLWeddingBot/invite?startapp=${startParam}`;
 
