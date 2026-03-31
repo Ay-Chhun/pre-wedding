@@ -12,7 +12,7 @@
     font-family: 'Moul';
     font-style: normal;
     font-weight: 400;
-    font-display: swap;
+    font-display: block;
     src: url('assets/fonts/moul-khmer.woff2') format('woff2');
     unicode-range: U+1780-17FF, U+19E0-19FF, U+200C-200D, U+25CC;
 }
@@ -48,7 +48,7 @@
     font-family: 'Battambang';
     font-style: normal;
     font-weight: 400;
-    font-display: swap;
+    font-display: block;
     src: url('assets/fonts/battambang-400-khmer.woff2') format('woff2');
     unicode-range: U+1780-17FF, U+19E0-19FF, U+200C-200D, U+25CC;
 }
@@ -2479,7 +2479,7 @@ img {
     width: 100%;
     max-width: 500px;
     height: 100vh;
-    background: url('assets/invit-bg.png') no-repeat center center;
+    background: #f7f3ed url('assets/invit-bg.png') no-repeat center center;
     background-size: cover; /* Cover ensures it's not stretched! */
     z-index: 99999;
     display: flex;
