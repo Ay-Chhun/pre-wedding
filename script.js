@@ -583,6 +583,10 @@ document.addEventListener("DOMContentLoaded", function () {
             guestEl.style.transition = "all 1s ease";
             guestEl.style.color = "#ce9d4d";
             guestEl.style.textShadow = "0 0 15px rgba(255,255,255,0.9), 0 0 25px rgba(255,255,255,0.6)";
+            guestEl.style.border = "none";
+            guestEl.style.background = "none";
+            guestEl.style.boxShadow = "none";
+            guestEl.style.padding = "0";
         });
     };
 
