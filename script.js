@@ -44,6 +44,18 @@ if (envelopeScreen) {
         }
     }
 
+    function closeEnvelope() {
+        if (!envelopeScreen.classList.contains('opened')) return;
+        
+        envelopeScreen.classList.remove('opened');
+        document.body.style.overflow = 'hidden'; // Lock scroll again
+        
+        // Restart the falling hearts on the envelope!
+        if (typeof startEnvelopeHearts === 'function') {
+            startEnvelopeHearts();
+        }
+    }
+
     let envelopeStartX = 0;
     let isDraggingEnvelope = false;
     let currentTranslateX = 0;
@@ -88,6 +100,29 @@ if (envelopeScreen) {
         }
         currentTranslateX = 0;
     }
+
+    // Global Swipe-to-Close Logic (Works anywhere once opened)
+    let closeStartX = 0;
+    let closeStartY = 0;
+
+    document.addEventListener('touchstart', (e) => {
+        if (envelopeScreen.classList.contains('opened')) {
+            closeStartX = e.touches[0].clientX;
+            closeStartY = e.touches[0].clientY;
+        }
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+        if (!envelopeScreen.classList.contains('opened')) return;
+        
+        const diffX = e.changedTouches[0].clientX - closeStartX;
+        const diffY = e.changedTouches[0].clientY - closeStartY;
+        
+        // Only trigger if horizontal swipe is significantly dominant to avoid scroll-to-close accidental triggers
+        if (Math.abs(diffX) > Math.abs(diffY) && diffX > 60) {
+            closeEnvelope();
+        }
+    }, { passive: true });
 
     // Touch events for mobile phones
     envelopeScreen.addEventListener('touchstart', (e) => handleDragStart(e.touches[0].clientX), { passive: false });
