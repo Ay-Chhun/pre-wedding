@@ -35,6 +35,72 @@
 
 <body>
 
+    <!-- Interactive Envelope Screen -->
+    <div id="envelope-screen" class="envelope-screen">
+        <div class="envelope-content">
+            <!-- Exact matching titles -->
+            <h1 class="envelope-title cover-title" style="margin-top: 0; margin-bottom: 5px;">សិរីសួស្ដីអាពាហ៍ពិពាហ៍
+            </h1>
+            <h3 style="font-family: 'Times New Roman', serif; font-size: 0.8rem; color: #7a5421; letter-spacing: 2px; margin-bottom: 20px; text-transform: uppercase; font-weight: normal; text-shadow: 0 0 10px rgba(255,255,255,0.9);">
+                The Wedding Day</h3>
+
+            <!-- Stacked Names just like the physical card! -->
+            <div class="envelope-names cover-names" style="margin-bottom: 20px; display: flex; flex-direction: column; line-height: 1.1; text-align: center; font-size: 2.5rem;">
+                <div style="position: relative; display: inline-block;">
+                    <span style="padding-right: 40px;">ឈុន</span>
+                    <span class="heart" style="position: absolute; right: 0; bottom: -8px; font-size: 1.2rem;">❤️</span>
+                </div>
+                <div style="padding-left: 15px;">ម៉ីលិញ</div>
+            </div>
+
+            <!-- Guest Name Box matching physical card -->
+            <p style="font-family: var(--khmer-header-font); color: #7a5421; font-size: 1.15rem; margin-bottom: 8px; font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.9); letter-spacing: 0.5px;">សូមគោរពអញ្ជើញ</p>
+            
+            <div style="position: relative; width: 85%; max-width: 310px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: center;">
+                <!-- Left printed flourish -->
+                <div style="position: absolute; left: -12px; top: 50%; transform: translateY(-50%); z-index: 2; background: url('assets/invit-bg.png') center/cover; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <i class="fa-solid fa-leaf" style="color: #7a5421; font-size: 0.8rem; transform: rotate(-45deg);"></i>
+                </div>
+                
+                <!-- Premium Double-Border Box -->
+                <div style="flex-grow: 1; min-width: 200px; background: rgba(255, 255, 255, 0.95); border: 1.5px solid #7a5421; padding: 2px; box-shadow: 0 4px 8px rgba(0,0,0,0.08);">
+                    <div style="border: 1px solid rgba(122, 84, 33, 0.4); padding: 5px 10px; text-align: center; min-height: 24px;">
+                        <p class="guest-name" style="font-family: var(--khmer-body-font); font-size: 1.15rem; color: #7a5421; margin: 0; font-weight: bold; background: none !important; padding: 0 !important; box-shadow: none !important; line-height: 1.2;">ភ្ញៀវកិត្តិយស</p>
+                    </div>
+                </div>
+                
+                <!-- Right printed flourish -->
+                <div style="position: absolute; right: -12px; top: 50%; transform: translateY(-50%); z-index: 2; background: url('assets/invit-bg.png') center/cover; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <i class="fa-solid fa-leaf" style="color: #7a5421; font-size: 0.8rem; transform: rotate(135deg);"></i>
+                </div>
+            </div>
+
+            <!-- Detailed Wedding Date and Location -->
+            <div class="envelope-date" style="font-family: var(--khmer-body-font); color: #7a5421; font-size: 0.9rem; margin-bottom: 20px; font-weight: bold; text-shadow: 0 1px 3px rgba(255,255,255,0.9); line-height: 1.5;">
+                ថ្ងៃសៅរ៍ ទី២៥ ខែមេសា ឆ្នាំ២០២៦<br>
+                វេលាម៉ោង ៥:០០ ល្ងាច ស្ថិតនៅ គេហដ្ឋានខាងស្រី<br>
+                ភូមិថ្មី ឃុំលើកដែក ស្រុកកោះធំ ខេត្តកណ្តាល
+            </div>
+
+            <!-- Mini Floating Countdown strictly for Envelope Screen -->
+            <div class="envelope-countdown" style="display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; font-family: var(--khmer-body-font); color: #7a5421;">
+                <div style="min-width: 45px; text-align: center;">
+                    <span class="cd-days" style="font-size: 1.5rem; font-weight: bold; font-family: var(--khmer-header-font); text-shadow: 0 1px 5px rgba(255, 255, 255, 0.9);">០០</span><br><span style="font-size: 0.8rem; font-weight: bold;">ថ្ងៃ</span>
+                </div>
+                <div style="min-width: 45px; text-align: center;">
+                    <span class="cd-hours" style="font-size: 1.5rem; font-weight: bold; font-family: var(--khmer-header-font); text-shadow: 0 1px 5px rgba(255, 255, 255, 0.9);">០០</span><br><span style="font-size: 0.8rem; font-weight: bold;">ម៉ោង</span>
+                </div>
+                <div style="min-width: 45px; text-align: center;">
+                    <span class="cd-minutes" style="font-size: 1.5rem; font-weight: bold; font-family: var(--khmer-header-font); text-shadow: 0 1px 5px rgba(255, 255, 255, 0.9);">០០</span><br><span style="font-size: 0.8rem; font-weight: bold;">នាទី</span>
+                </div>
+                <div style="min-width: 45px; text-align: center;">
+                    <span class="cd-seconds" style="font-size: 1.5rem; font-weight: bold; font-family: var(--khmer-header-font); text-shadow: 0 1px 5px rgba(255, 255, 255, 0.9);">០០</span><br><span style="font-size: 0.8rem; font-weight: bold;">វិនាទី</span>
+                </div>
+            </div>
+            <p class="swipe-text">សូមអូសទៅឆ្វេងដើម្បីបើក</p>
+            <i class="fa-solid fa-chevron-left swipe-arrow"></i>
+        </div>
+    </div>
 
     <!-- Cover Screen Card -->
     <div id="cover-card" class="card-container cover-card">
@@ -163,7 +229,7 @@
                 <p>នឹងប្រព្រឹត្តទៅនៅ</p>
                 <div class="date-location">
                     <p class="wedding-date">ថ្ងៃសៅរ៍ ទី២៥ ខែមេសា ឆ្នាំ២០២៦</p>
-                    <p class="lunar-date">(ត្រូវនឹងថ្ងៃ ៩កើត ខែពិសាខ ឆ្នាំម្សាញ់ សប្តស័ក ពុទ្ធសករាជ ២៥៦៩)</p>
+                    <p class="lunar-date">(ត្រូវនឹងថ្ងៃ ៩កើត ខែពិសាខ ឆ្នាំមមី សប្តស័ក ពុទ្ធសករាជ ២៥៦៩)</p>
                     <p class="time">វេលាម៉ោង ៥:០០ល្ងាច</p>
                     <p>នៅ គេហដ្ឋានខាងស្រី​ ភូមិថ្មី ឃុំលើកដែក ស្រុកកោះធំ ខេត្តកណ្តាល</p>
                     <a href="https://maps.app.goo.gl/PE9qVxLSQXPe2Ly38" target="_blank" class="map-btn"><i
@@ -227,7 +293,7 @@
             <ul class="event-list">
                 <li class="event-item scroll-animate">
                     <span class="event-time">ម៉ោង ០៦:៣០ នាទីព្រឹក</span>
-                    <span class="event-name">ជួបជុំភ្ញៀវកិត្តិយស ដើម្បីរៀបចំហែជំនូន</span>
+                    <span class="event-name">ជួបជុំភ្ញៀវកិត្តិយស ដើម្បីរៀបចំហែរជំនូន</span>
                 </li>
                 <li class="event-item scroll-animate">
                     <span class="event-time">ម៉ោង ០៧:០០ នាទីព្រឹក</span>

@@ -387,7 +387,7 @@ img {
     /* Slightly smaller to match golden text */
     color: #e63946;
     /* Deep elegant romantic red */
-    animation: heartbeat 1.5s infinite;
+    animation: heartbeat 0.9s infinite ease-in-out;
     filter: drop-shadow(0 2px 4px rgba(230, 57, 70, 0.4));
     display: inline-block;
 }
@@ -2464,4 +2464,150 @@ img {
     100% {
         transform: scale(1.08) rotate(5deg);
     }
+}
+
+/* ========================================================= */
+/* ENVELOPE SHAKE TO OPEN & OVERLAY SCREEN                     */
+/* ========================================================= */
+.envelope-screen {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: perspective(1500px) translateX(-50%) translateY(0) rotateY(0deg);
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    width: 100%;
+    max-width: 500px;
+    height: 100vh;
+    background: url('assets/invit-bg.png') no-repeat center center;
+    background-size: cover; /* Cover ensures it's not stretched! */
+    z-index: 99999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
+    
+    /* 3D Book Shadows */
+    border-left: 2px solid #7a5421;
+    box-shadow: inset 50px 0 60px -25px rgba(0,0,0,0.7), /* Deep crease where cover meets the spine */
+                15px 0 40px rgba(0,0,0,0.5); /* Outer drop shadow giving it physical thickness */
+}
+
+/* Premium Pink Velvet Book Spine Binding */
+.envelope-screen::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 28px;
+    height: 100%;
+    background: linear-gradient(90deg, #9b2a5a 0%, #e85596 35%, #ff8dbf 50%, #e85596 65%, #9b2a5a 100%);
+    border-right: 1px solid rgba(255,255,255,0.4);
+    box-shadow: inset -3px 0 6px rgba(0,0,0,0.4), 6px 0 15px rgba(0,0,0,0.5);
+    z-index: 0;
+}
+
+.envelope-screen.is-dragging {
+    transition: none !important;
+}
+
+.envelope-screen.opened {
+    transform: perspective(1500px) translateX(-50%) rotateY(-110deg);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.envelope-content {
+    text-align: center;
+    padding: 20px;
+    background: transparent; /* Removed the clunky white box! */
+    box-shadow: none;
+    border: none;
+    width: 100%;
+    z-index: 2; /* Sit firmly above the metallic spine */
+}
+
+.envelope-title {
+    font-family: var(--khmer-header-font);
+    font-size: 1.8rem; /* Scaled down slightly to fit better */
+    color: var(--deep-pink); /* Matching the original vibe */
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    text-shadow: 0 0 15px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.9); /* Bright white glow to stick out on the floral bg */
+}
+
+.envelope-names {
+    font-family: var(--khmer-header-font);
+    font-size: 2.8rem;
+    font-weight: bold;
+    color: var(--gold);
+    margin-bottom: 40px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255,255,255,0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Hide the underlying text on the cover card while the envelope is closed (so it doesn't blur through) */
+#envelope-screen:not(.opened) ~ #cover-card .cover-content {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#cover-card .cover-content {
+    transition: opacity 1.5s ease-in-out;
+}
+
+.swipe-text {
+    font-family: var(--khmer-body-font);
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    font-weight: bold;
+    color: var(--deep-pink); /* Romantic pink that matches the title */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 255, 255, 0.9);
+    letter-spacing: 1px;
+    opacity: 0.9;
+}
+
+.swipe-arrow {
+    font-size: 1.8rem;
+    color: var(--deep-pink); /* Matched pink arrow */
+    animation: bounceLeft 1.5s infinite;
+    filter: drop-shadow(0 2px 5px rgba(255, 255, 255, 0.8));
+}
+
+@keyframes bounceLeft {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateX(0);
+    }
+    40% {
+        transform: translateX(-15px);
+    }
+    60% {
+        transform: translateX(-7px);
+    }
+}
+
+/* Small falling hearts on envelope */
+@keyframes fallEnvelopeHeart {
+    0% {
+        transform: translateY(-10vh) translateX(0) rotate(-15deg);
+        opacity: 0;
+    }
+    15% { opacity: 0.6; }
+    50% { transform: translateY(50vh) translateX(20px) rotate(15deg); opacity: 0.6; }
+    85% { opacity: 0.6; }
+    100% {
+        transform: translateY(110vh) translateX(-20px) rotate(-15deg);
+        opacity: 0;
+    }
+}
+
+.env-small-heart {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+    z-index: 1; /* Below text, above background */
+    filter: drop-shadow(0 2px 4px rgba(224, 75, 139, 0.4));
 }

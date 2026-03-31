@@ -8,6 +8,100 @@ if (WebApp) {
     WebApp.setHeaderColor('secondary_bg_color');
 }
 
+// ==========================================
+// ENVELOPE OVERLAY LOGIC
+// ==========================================
+const envelopeScreen = document.getElementById('envelope-screen');
+if (envelopeScreen) {
+    // Lock scrolling initially so they are forced to deal with envelope
+    document.body.style.overflow = 'hidden';
+
+
+    function openEnvelope() {
+        if (envelopeScreen.classList.contains('opened')) return; // Already opened
+        
+        envelopeScreen.classList.add('opened');
+        document.body.style.overflow = ''; // Restore scrolling for the rest of the site
+        
+        // Unleash the elegant slideshow instantly when they swipe!
+        if (typeof window.startCoverSlideshow === 'function') {
+            window.startCoverSlideshow();
+        }
+        
+        // Because opening requires a direct tap or swipe, we can FINALLY play audio safely!
+        const musicElement = document.getElementById('bg-music');
+        if (musicElement) {
+            musicElement.volume = 0.5;
+            const playPromise = musicElement.play();
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Update the global state defined later in the script
+                    if (typeof window.isMusicPlaying !== 'undefined') window.isMusicPlaying = true;
+                    window.isMusicPlaying = true; 
+                    if (typeof updateAudioIcon === 'function') updateAudioIcon();
+                }).catch((e) => console.log('Audio blocked:', e));
+            }
+        }
+    }
+
+    let envelopeStartX = 0;
+    let isDraggingEnvelope = false;
+    let currentTranslateX = 0;
+
+    function handleDragStart(x) {
+        if (envelopeScreen.classList.contains('opened')) return;
+        envelopeStartX = x;
+        isDraggingEnvelope = true;
+        envelopeScreen.classList.add('is-dragging');
+    }
+
+    function handleDragMove(x, e) {
+        if (!isDraggingEnvelope) return;
+        
+        let diffX = x - envelopeStartX; // Negative if sliding LEFT
+        
+        // Add huge resistance if trying to swipe right
+        if (diffX > 0) {
+            diffX = diffX * 0.15; 
+        }
+        
+        currentTranslateX = diffX;
+        
+        // Translate the pixel drag into an angle (e.g. 200px swipe = -80 degrees)
+        let angle = diffX * 0.4;
+        if (angle < -160) angle = -160; // Cap rotation
+
+        // Apply a 3D rotateY to behave exactly like a book cover turning
+        envelopeScreen.style.transform = `perspective(1500px) translateX(-50%) rotateY(${angle}deg)`;
+        e.preventDefault(); 
+    }
+
+    function handleDragEnd() {
+        if (!isDraggingEnvelope) return;
+        isDraggingEnvelope = false;
+        envelopeScreen.classList.remove('is-dragging');
+        envelopeScreen.style.transform = ''; // Clear inline styles so css transitions takeover
+        
+        // If swiped left more than 70 pixels, open it (turn the page). Otherwise snap closed!
+        if (currentTranslateX < -70) {
+            openEnvelope();
+        }
+        currentTranslateX = 0;
+    }
+
+    // Touch events for mobile phones
+    envelopeScreen.addEventListener('touchstart', (e) => handleDragStart(e.touches[0].clientX), {passive: false});
+    envelopeScreen.addEventListener('touchmove', (e) => handleDragMove(e.touches[0].clientX, e), {passive: false});
+    envelopeScreen.addEventListener('touchend', handleDragEnd);
+
+    // Mouse events heavily requested so they can swipe it on Desktop too!
+    envelopeScreen.addEventListener('mousedown', (e) => handleDragStart(e.clientX));
+    document.addEventListener('mousemove', (e) => {
+        if (isDraggingEnvelope) handleDragMove(e.clientX, e);
+    });
+    document.addEventListener('mouseup', handleDragEnd);
+}
+
 // Function to track app launch securely via Vercel API
 function trackLaunch(guestName = null) {
     if (!WebApp) return;
@@ -56,15 +150,32 @@ const countdownTimer = setInterval(function () {
         // For expired, we show simple Y M D logic - note: this is a rough approximation 
         // since 'distance' is just ms. For precise YMD we'd need Date diffing.
         // But following the requested layout:
-        document.getElementById("days").innerText = toKhmerNumbers(Math.floor(days / 365));
-        document.getElementById("hours").innerText = toKhmerNumbers(Math.floor((days % 365) / 30));
-        document.getElementById("minutes").innerText = toKhmerNumbers(days % 30);
+        // For expired, we show simple Y M D logic
+        const yr = toKhmerNumbers(Math.floor(days / 365));
+        const mo = toKhmerNumbers(Math.floor((days % 365) / 30));
+        const da = toKhmerNumbers(days % 30);
+        document.getElementById("days").innerText = yr;
+        document.getElementById("hours").innerText = mo;
+        document.getElementById("minutes").innerText = da;
+        document.querySelectorAll('.cd-days').forEach(el => el.innerText = yr);
+        document.querySelectorAll('.cd-hours').forEach(el => el.innerText = mo);
+        document.querySelectorAll('.cd-minutes').forEach(el => el.innerText = da);
     } else {
         if (titleEl) titleEl.innerText = "រាប់ថយក្រោយ";
-        document.getElementById("days").innerText = formatTime(days);
-        document.getElementById("hours").innerText = formatTime(hours);
-        document.getElementById("minutes").innerText = formatTime(minutes);
-        document.getElementById("seconds").innerText = formatTime(seconds);
+        const fDays = formatTime(days);
+        const fHours = formatTime(hours);
+        const fMins = formatTime(minutes);
+        const fSecs = formatTime(seconds);
+        
+        document.getElementById("days").innerText = fDays;
+        document.getElementById("hours").innerText = fHours;
+        document.getElementById("minutes").innerText = fMins;
+        document.getElementById("seconds").innerText = fSecs;
+        
+        document.querySelectorAll('.cd-days').forEach(el => el.innerText = fDays);
+        document.querySelectorAll('.cd-hours').forEach(el => el.innerText = fHours);
+        document.querySelectorAll('.cd-minutes').forEach(el => el.innerText = fMins);
+        document.querySelectorAll('.cd-seconds').forEach(el => el.innerText = fSecs);
         document.getElementById("seconds").parentElement.style.display = 'block';
     }
 }, 1000);
@@ -326,7 +437,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (let i = 0; i < imagesToShow && i < hiddenExtras.length; i++) {
                 const item = hiddenExtras[i];
                 item.classList.add('show');
-                
+
                 // Remove lazy loading since we want them to show immediately from cache
                 const img = item.querySelector('img');
                 if (img) img.removeAttribute('loading');
@@ -466,12 +577,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const guestId = urlParams.get('guest');
 
     const updateGuestUI = (name) => {
-        const guestEl = document.querySelector('.guest-name');
-        if (guestEl) {
+        const guestEls = document.querySelectorAll('.guest-name');
+        guestEls.forEach(guestEl => {
             guestEl.textContent = name;
             guestEl.style.transition = "color 1s ease";
             guestEl.style.color = "var(--gold-text)";
-        }
+        });
     };
 
     if (guestId) {
@@ -637,12 +748,20 @@ document.addEventListener("DOMContentLoaded", function () {
     const slides = document.querySelectorAll('.cover-slide');
     let currentSlide = 0;
 
-    if (slides.length > 1) {
-        setInterval(() => {
-            slides[currentSlide].classList.remove('active');
-            currentSlide = (currentSlide + 1) % slides.length;
-            slides[currentSlide].classList.add('active');
-        }, 5000); // Change image every 5 seconds
+    window.startCoverSlideshow = function() {
+        if (slides.length > 1 && !window.slideshowIntervalId) {
+            window.slideshowIntervalId = setInterval(() => {
+                slides[currentSlide].classList.remove('active');
+                currentSlide = (currentSlide + 1) % slides.length;
+                slides[currentSlide].classList.add('active');
+            }, 5000); // Change image every 5 seconds
+        }
+    };
+
+    // If there is NO envelope screen right now, or if it is ALREADY opened (perhaps via refresh), start slideshow instantly.
+    const theEnvelope = document.getElementById('envelope-screen');
+    if (!theEnvelope || theEnvelope.classList.contains('opened')) {
+        window.startCoverSlideshow();
     }
 
     const numHearts = 7; // Reduced quantity for a cleaner look (around 5-8)
@@ -654,7 +773,7 @@ document.addEventListener("DOMContentLoaded", function () {
     heartsContainer.style.width = '100%';
     heartsContainer.style.height = '100%';
     heartsContainer.style.pointerEvents = 'none';
-    heartsContainer.style.zIndex = '9999';
+    heartsContainer.style.zIndex = '9999'; // Float exactly over the inside slideshow, but beneath the envelope
     document.body.appendChild(heartsContainer);
 
     for (let i = 0; i < numHearts; i++) {
@@ -745,7 +864,7 @@ function handleMouseMove(e) {
     const now = Date.now();
     if (now - lastSparkleTime < sparkleThrottle) return;
     lastSparkleTime = now;
-    
+
     // Use requestAnimationFrame for smooth DOM injection
     requestAnimationFrame(() => {
         createSparkle(e.clientX, e.clientY);
@@ -756,7 +875,7 @@ function handleTouchMove(e) {
     const now = Date.now();
     if (now - lastSparkleTime < sparkleThrottle) return;
     lastSparkleTime = now;
-    
+
     const touch = e.touches[0];
     requestAnimationFrame(() => {
         createSparkle(touch.clientX, touch.clientY);
@@ -1116,3 +1235,46 @@ document.addEventListener('copy', function (e) {
 document.addEventListener('cut', function (e) {
     e.preventDefault();
 });
+
+// ==========================================
+// ENVELOPE SMALL FALLING HEARTS
+// ==========================================
+function startEnvelopeHearts() {
+    const envelope = document.getElementById('envelope-screen');
+    if (!envelope) return;
+
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.inset = '0';
+    container.style.overflow = 'hidden';
+    container.style.pointerEvents = 'none';
+    container.style.zIndex = '1';
+    envelope.appendChild(container);
+
+    const heartShapes = ['❤️', '💕', '✨', '🌸'];
+
+    let heartInterval = setInterval(() => {
+        if (envelope.classList.contains('opened')) {
+            clearInterval(heartInterval);
+            return;
+        }
+
+        const heart = document.createElement('div');
+        heart.classList.add('env-small-heart');
+        heart.innerHTML = heartShapes[Math.floor(Math.random() * heartShapes.length)];
+        
+        heart.style.left = Math.random() * 100 + '%';
+        const duration = Math.random() * 4 + 5; // 5 to 9 seconds falling
+        heart.style.animation = `fallEnvelopeHeart ${duration}s linear forwards`;
+        
+        const size = Math.random() * 0.8 + 0.5; // 0.5 to 1.3 rem
+        heart.style.fontSize = size + 'rem';
+        
+        container.appendChild(heart);
+
+        setTimeout(() => {
+            heart.remove();
+        }, duration * 1000);
+    }, 500); // 1 new petal every 500ms
+}
+document.addEventListener('DOMContentLoaded', startEnvelopeHearts);
