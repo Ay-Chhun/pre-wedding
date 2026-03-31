@@ -580,8 +580,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const guestEls = document.querySelectorAll('.guest-name');
         guestEls.forEach(guestEl => {
             guestEl.textContent = name;
-            guestEl.style.transition = "color 1s ease";
-            guestEl.style.color = "var(--gold-text)";
+            guestEl.style.transition = "all 1s ease";
+            guestEl.style.color = "#ce9d4d";
+            guestEl.style.textShadow = "0 0 15px rgba(255,255,255,0.9), 0 0 25px rgba(255,255,255,0.6)";
         });
     };
 
