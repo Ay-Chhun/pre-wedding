@@ -19,15 +19,15 @@ if (envelopeScreen) {
 
     function openEnvelope() {
         if (envelopeScreen.classList.contains('opened')) return; // Already opened
-        
+
         envelopeScreen.classList.add('opened');
         document.body.style.overflow = ''; // Restore scrolling for the rest of the site
-        
+
         // Unleash the elegant slideshow instantly when they swipe!
         if (typeof window.startCoverSlideshow === 'function') {
             window.startCoverSlideshow();
         }
-        
+
         // Because opening requires a direct tap or swipe, we can FINALLY play audio safely!
         const musicElement = document.getElementById('bg-music');
         if (musicElement) {
@@ -37,7 +37,7 @@ if (envelopeScreen) {
                 playPromise.then(() => {
                     // Update the global state defined later in the script
                     if (typeof window.isMusicPlaying !== 'undefined') window.isMusicPlaying = true;
-                    window.isMusicPlaying = true; 
+                    window.isMusicPlaying = true;
                     if (typeof updateAudioIcon === 'function') updateAudioIcon();
                 }).catch((e) => console.log('Audio blocked:', e));
             }
@@ -57,23 +57,23 @@ if (envelopeScreen) {
 
     function handleDragMove(x, e) {
         if (!isDraggingEnvelope) return;
-        
+
         let diffX = x - envelopeStartX; // Negative if sliding LEFT
-        
+
         // Add huge resistance if trying to swipe right
         if (diffX > 0) {
-            diffX = diffX * 0.15; 
+            diffX = diffX * 0.15;
         }
-        
+
         currentTranslateX = diffX;
-        
+
         // Translate the pixel drag into an angle (e.g. 200px swipe = -80 degrees)
         let angle = diffX * 0.4;
         if (angle < -160) angle = -160; // Cap rotation
 
         // Apply a 3D rotateY to behave exactly like a book cover turning
         envelopeScreen.style.transform = `perspective(1500px) translateX(-50%) rotateY(${angle}deg)`;
-        e.preventDefault(); 
+        e.preventDefault();
     }
 
     function handleDragEnd() {
@@ -81,7 +81,7 @@ if (envelopeScreen) {
         isDraggingEnvelope = false;
         envelopeScreen.classList.remove('is-dragging');
         envelopeScreen.style.transform = ''; // Clear inline styles so css transitions takeover
-        
+
         // If swiped left more than 70 pixels, open it (turn the page). Otherwise snap closed!
         if (currentTranslateX < -70) {
             openEnvelope();
@@ -90,8 +90,8 @@ if (envelopeScreen) {
     }
 
     // Touch events for mobile phones
-    envelopeScreen.addEventListener('touchstart', (e) => handleDragStart(e.touches[0].clientX), {passive: false});
-    envelopeScreen.addEventListener('touchmove', (e) => handleDragMove(e.touches[0].clientX, e), {passive: false});
+    envelopeScreen.addEventListener('touchstart', (e) => handleDragStart(e.touches[0].clientX), { passive: false });
+    envelopeScreen.addEventListener('touchmove', (e) => handleDragMove(e.touches[0].clientX, e), { passive: false });
     envelopeScreen.addEventListener('touchend', handleDragEnd);
 
     // Mouse events heavily requested so they can swipe it on Desktop too!
@@ -166,12 +166,12 @@ const countdownTimer = setInterval(function () {
         const fHours = formatTime(hours);
         const fMins = formatTime(minutes);
         const fSecs = formatTime(seconds);
-        
+
         document.getElementById("days").innerText = fDays;
         document.getElementById("hours").innerText = fHours;
         document.getElementById("minutes").innerText = fMins;
         document.getElementById("seconds").innerText = fSecs;
-        
+
         document.querySelectorAll('.cd-days').forEach(el => el.innerText = fDays);
         document.querySelectorAll('.cd-hours').forEach(el => el.innerText = fHours);
         document.querySelectorAll('.cd-minutes').forEach(el => el.innerText = fMins);
@@ -749,7 +749,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const slides = document.querySelectorAll('.cover-slide');
     let currentSlide = 0;
 
-    window.startCoverSlideshow = function() {
+    window.startCoverSlideshow = function () {
         if (slides.length > 1 && !window.slideshowIntervalId) {
             window.slideshowIntervalId = setInterval(() => {
                 slides[currentSlide].classList.remove('active');
@@ -1263,14 +1263,14 @@ function startEnvelopeHearts() {
         const heart = document.createElement('div');
         heart.classList.add('env-small-heart');
         heart.innerHTML = heartShapes[Math.floor(Math.random() * heartShapes.length)];
-        
+
         heart.style.left = Math.random() * 100 + '%';
         const duration = Math.random() * 4 + 5; // 5 to 9 seconds falling
         heart.style.animation = `fallEnvelopeHeart ${duration}s linear forwards`;
-        
+
         const size = Math.random() * 0.8 + 0.5; // 0.5 to 1.3 rem
         heart.style.fontSize = size + 'rem';
-        
+
         container.appendChild(heart);
 
         setTimeout(() => {
