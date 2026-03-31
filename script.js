@@ -59,81 +59,104 @@ if (envelopeScreen) {
     let envelopeStartX = 0;
     let isDraggingEnvelope = false;
     let currentTranslateX = 0;
+    let initialRotation = 0;
 
     function handleDragStart(x) {
-        if (envelopeScreen.classList.contains('opened')) return;
+        // Allow dragging regardless of opened state for full interactivity
         envelopeStartX = x;
         isDraggingEnvelope = true;
         envelopeScreen.classList.add('is-dragging');
+        
+        // Record the current rotation based on state
+        initialRotation = envelopeScreen.classList.contains('opened') ? -110 : 0;
     }
 
     function handleDragMove(x, e) {
         if (!isDraggingEnvelope) return;
 
-        let diffX = x - envelopeStartX; // Negative if sliding LEFT
-
-        // Add huge resistance if trying to swipe right
-        if (diffX > 0) {
-            diffX = diffX * 0.15;
-        }
-
+        let diffX = x - envelopeStartX; 
         currentTranslateX = diffX;
 
-        // Translate the pixel drag into an angle (e.g. 200px swipe = -80 degrees)
-        let angle = diffX * 0.4;
-        if (angle < -160) angle = -160; // Cap rotation
+        // Calculate rotation based on drag distance
+        // Factor 0.4 means ~250px swipe = 100 degrees of rotation
+        let angleOffset = diffX * 0.4;
+        let finalAngle = initialRotation + angleOffset;
 
-        // Apply a 3D rotateY to behave exactly like a book cover turning
-        envelopeScreen.style.transform = `perspective(1500px) translateX(-50%) rotateY(${angle}deg)`;
+        // Constrain rotation between fully open (-160) and slightly past closed (+10)
+        if (finalAngle < -160) finalAngle = -160;
+        if (finalAngle > 10) finalAngle = 10;
+
+        // Apply 3D rotation and ensure it overrides transitions during drag
+        envelopeScreen.style.transform = `perspective(1500px) translateX(-50%) rotateY(${finalAngle}deg)`;
+        
+        // If it was already fully opened, make sure opacity is correctly restored as we pull it back
+        if (envelopeScreen.classList.contains('opened')) {
+            let progress = Math.abs(finalAngle) / 110; // 1 = fully open, 0 = closed
+            envelopeScreen.style.opacity = 1 - progress; // Fade in as we close it
+            
+            // Critical: If we pull it from fully open, we need to re-enable interaction with the cover itself
+            if (finalAngle > -90) envelopeScreen.style.pointerEvents = 'auto';
+        }
+
         e.preventDefault();
     }
 
     function handleDragEnd() {
         if (!isDraggingEnvelope) return;
         isDraggingEnvelope = false;
+        
         envelopeScreen.classList.remove('is-dragging');
         envelopeScreen.style.transform = ''; // Clear inline styles so css transitions takeover
+        envelopeScreen.style.opacity = '';
+        envelopeScreen.style.pointerEvents = '';
 
-        // If swiped left more than 70 pixels, open it (turn the page). Otherwise snap closed!
-        if (currentTranslateX < -70) {
-            openEnvelope();
+        // Decision logic: If already closed, check if swipe was far enough to OPEN
+        if (!envelopeScreen.classList.contains('opened')) {
+            if (currentTranslateX < -70) {
+                openEnvelope();
+            }
+        } 
+        // If already opened, check if swipe was far enough to CLOSE
+        else {
+            if (currentTranslateX > 70) {
+                closeEnvelope();
+            }
         }
+        
         currentTranslateX = 0;
     }
 
-    // Global Swipe-to-Close Logic (Works anywhere once opened)
-    let closeStartX = 0;
-    let closeStartY = 0;
-
+    // Touch events for mobile phones (Global listeners since the cover might be rotated away)
     document.addEventListener('touchstart', (e) => {
-        if (envelopeScreen.classList.contains('opened')) {
-            closeStartX = e.touches[0].clientX;
-            closeStartY = e.touches[0].clientY;
+        // If closed, only start drag if touching the envelope screen
+        if (!envelopeScreen.classList.contains('opened')) {
+            if (e.target.closest('#envelope-screen')) handleDragStart(e.touches[0].clientX);
+        } 
+        // If opened, start drag if touching from the left 20% of the screen (the "pull" area)
+        else {
+            if (e.touches[0].clientX < window.innerWidth * 0.25) handleDragStart(e.touches[0].clientX);
         }
-    }, { passive: true });
+    }, { passive: false });
 
-    document.addEventListener('touchend', (e) => {
-        if (!envelopeScreen.classList.contains('opened')) return;
-        
-        const diffX = e.changedTouches[0].clientX - closeStartX;
-        const diffY = e.changedTouches[0].clientY - closeStartY;
-        
-        // Only trigger if horizontal swipe is significantly dominant to avoid scroll-to-close accidental triggers
-        if (Math.abs(diffX) > Math.abs(diffY) && diffX > 60) {
-            closeEnvelope();
-        }
-    }, { passive: true });
+    document.addEventListener('touchmove', (e) => {
+        if (isDraggingEnvelope) handleDragMove(e.touches[0].clientX, e);
+    }, { passive: false });
 
-    // Touch events for mobile phones
-    envelopeScreen.addEventListener('touchstart', (e) => handleDragStart(e.touches[0].clientX), { passive: false });
-    envelopeScreen.addEventListener('touchmove', (e) => handleDragMove(e.touches[0].clientX, e), { passive: false });
-    envelopeScreen.addEventListener('touchend', handleDragEnd);
+    document.addEventListener('touchend', handleDragEnd);
 
     // Mouse events heavily requested so they can swipe it on Desktop too!
-    envelopeScreen.addEventListener('mousedown', (e) => handleDragStart(e.clientX));
+    document.addEventListener('mousedown', (e) => {
+        if (!envelopeScreen.classList.contains('opened')) {
+            if (e.target.closest('#envelope-screen')) handleDragStart(e.clientX);
+        } else if (e.clientX < window.innerWidth * 0.25) {
+            handleDragStart(e.clientX);
+        }
+    });
+
     document.addEventListener('mousemove', (e) => {
         if (isDraggingEnvelope) handleDragMove(e.clientX, e);
     });
+
     document.addEventListener('mouseup', handleDragEnd);
 }
 
