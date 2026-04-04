@@ -409,6 +409,119 @@ document.addEventListener('DOMContentLoaded', () => {
             };
         }
     });
+
+    // Gallery Show More Functionality
+    const showMoreBtn = document.getElementById('show-more-btn');
+    if (showMoreBtn) {
+        // Initial state: hide items after the 11th (0-10 shown)
+        let occupiedSpots = 0;
+        const maxSpots = 10;
+
+        galleryItems.forEach((item, index) => {
+            const img = item.querySelector('img');
+            if (img) {
+                // Restore the background image for background:inherit compatibility
+                item.style.backgroundImage = `url(${img.src})`;
+            }
+
+            let isWide = item.classList.contains('gallery-wide');
+
+            // --- NEW: Better Gap Filling Logic ---
+            const nextItem = galleryItems[index + 1];
+            const nextIsWide = nextItem && nextItem.classList.contains('gallery-wide');
+
+            // If this item starts a new row but the NEXT one is wide, 
+            // this item will be alone. Make it wide to fill the row.
+            if (!isWide && (occupiedSpots % 2 === 0) && nextIsWide) {
+                item.classList.add('gallery-wide');
+                isWide = true;
+            }
+
+            // If this is the last visible item and it's starting a new row, 
+            // make it wide to avoid an empty space on the right.
+            if (!isWide && (occupiedSpots % 2 === 0) && (index === galleryItems.length - 1 || occupiedSpots === maxSpots - 1)) {
+                item.classList.add('gallery-wide');
+                isWide = true;
+            }
+
+            const itemSpots = isWide ? 2 : 1;
+
+            if (occupiedSpots + itemSpots <= maxSpots) {
+                occupiedSpots += itemSpots;
+            } else {
+                // DON'T use display: none; visibility: hidden allows background pre-loading!
+                item.classList.add('gallery-extra');
+                // We'll handle pre-loading these in the background
+            }
+        });
+
+        // Background Pre-loading Technique: 
+        // Force the browser to fetch images in the background so the 'Show More' is instant.
+        const preloadGalleryImages = () => {
+            const extras = document.querySelectorAll('.gallery-extra img');
+            extras.forEach((img, i) => {
+                // Staggered fetch into browser cache using Image object
+                // This works even if the DOM element is 'display: none'
+                setTimeout(() => {
+                    const preloadImg = new Image();
+                    preloadImg.src = img.src;
+                }, 500 + (i * 100)); // Start after 500ms, then 100ms apart
+            });
+        };
+
+        // Run pre-loading after the first interaction or after a short idle delay
+        let preloaded = false;
+        const triggerPreload = () => {
+            if (preloaded) return;
+            preloaded = true;
+            preloadGalleryImages();
+            window.removeEventListener('scroll', triggerPreload);
+            window.removeEventListener('touchstart', triggerPreload);
+        };
+
+        // Aggressive but polite trigger: Idle callback, 3s timeout, or first interaction
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => triggerPreload());
+        }
+        setTimeout(triggerPreload, 3000);
+        window.addEventListener('scroll', triggerPreload, { passive: true });
+        window.addEventListener('touchstart', triggerPreload, { passive: true });
+
+        showMoreBtn.addEventListener('click', () => {
+            const hiddenExtras = Array.from(document.querySelectorAll('.gallery-extra')).filter(el => !el.classList.contains('show'));
+            const imagesToShow = 15;
+
+            // Only show the next 15 hidden items
+            for (let i = 0; i < imagesToShow && i < hiddenExtras.length; i++) {
+                const item = hiddenExtras[i];
+                item.classList.add('show');
+
+                // Remove lazy loading since we want them to show immediately from cache
+                const img = item.querySelector('img');
+                if (img) img.removeAttribute('loading');
+
+                // Subtle delay for staggered loading feel (70ms for more 'premium' reveal)
+                setTimeout(() => {
+                    requestAnimationFrame(() => {
+                        item.classList.add('visible');
+                    });
+                }, i * 70);
+            }
+
+            // Check if there are any hidden extras remaining
+            const remaining = Array.from(document.querySelectorAll('.gallery-extra')).filter(el => !el.classList.contains('show'));
+            if (remaining.length === 0) {
+                // All photos are out! Fade out the button
+                showMoreBtn.parentElement.style.opacity = '0';
+                setTimeout(() => {
+                    showMoreBtn.parentElement.style.display = 'none';
+                }, 400);
+            } else {
+                // Update button text to show remaining count if desired? 
+                // Let's keep it simple for now as requested.
+            }
+        });
+    }
 });
 
 let thumbnailsBuilt = false;
@@ -1221,40 +1334,4 @@ function startEnvelopeHearts() {
         }, duration * 1000);
     }, 500); // 1 new petal every 500ms
 }
-
 document.addEventListener('DOMContentLoaded', startEnvelopeHearts);
-// --- Global Cursor Heart Trail (Premium Feature) ---
-document.addEventListener('mousemove', (e) => {
-    if (Math.random() < 0.8) return; // Optimize: don't create on every move
-    createTrailHeart(e.clientX, e.clientY);
-});
-
-document.addEventListener('touchstart', (e) => {
-    const touch = e.touches[0];
-    for (let i = 0; i < 3; i++) {
-        createTrailHeart(touch.clientX, touch.clientY);
-    }
-});
-
-function createTrailHeart(x, y) {
-    const particle = document.createElement('div');
-    particle.className = 'click-particle';
-    const size = Math.random() * 0.8 + 0.4;
-    const colors = ['#ff6b98', '#EDD19C', '#ffffff', '#ff9a9e'];
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    
-    particle.innerHTML = `<span style="color: ${color}; font-size: ${size}rem; text-shadow: 0 0 10px ${color}">❤</span>`;
-    particle.style.left = x + 'px';
-    particle.style.top = y + 'px';
-    
-    const tx = (Math.random() * 80 - 40);
-    const ty = (Math.random() * 80 - 40) - 50; // Fly upwards a bit
-    const rot = Math.random() * 180 - 90;
-    
-    particle.style.setProperty('--tx', tx + 'px');
-    particle.style.setProperty('--ty', ty + 'px');
-    particle.style.setProperty('--rot', rot + 'deg');
-    
-    document.body.appendChild(particle);
-    setTimeout(() => particle.remove(), 1000);
-}
