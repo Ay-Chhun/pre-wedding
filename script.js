@@ -126,20 +126,62 @@ if (envelopeScreen) {
         currentTranslateX = 0;
     }
 
+
+    let envelopeStartY = 0;
+    let isVerticalScrolling = false;
+
     // Touch events for mobile phones (Global listeners since the cover might be rotated away)
     document.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        envelopeStartX = touch.clientX;
+        envelopeStartY = touch.clientY;
+        isVerticalScrolling = false;
+        isDraggingEnvelope = false;
+
         // If closed, only start drag if touching the envelope screen
         if (!envelopeScreen.classList.contains('opened')) {
-            if (e.target.closest('#envelope-screen')) handleDragStart(e.touches[0].clientX);
+            if (e.target.closest('#envelope-screen')) {
+                // We don't call handleDragStart yet, we wait for movement to see direction
+            }
         } 
-        // If opened, start drag if touching from the left 20% of the screen (the "pull" area)
+        // If opened, start drag if touching from the left 15% of the screen (the "pull" area)
         else {
-            if (e.touches[0].clientX < window.innerWidth * 0.25) handleDragStart(e.touches[0].clientX);
+            if (touch.clientX < window.innerWidth * 0.15) {
+                // We don't call handleDragStart yet, we wait for movement
+            }
         }
-    }, { passive: false });
+    }, { passive: true }); // Use passive: true for scroll performance
 
     document.addEventListener('touchmove', (e) => {
-        if (isDraggingEnvelope) handleDragMove(e.touches[0].clientX, e);
+        const touch = e.touches[0];
+        const diffX = touch.clientX - envelopeStartX;
+        const diffY = touch.clientY - envelopeStartY;
+
+        // If we haven't decided the direction yet
+        if (!isDraggingEnvelope && !isVerticalScrolling) {
+            // Threshold of 10px to determine intent
+            if (Math.abs(diffX) > 10 || Math.abs(diffY) > 10) {
+                if (Math.abs(diffX) > Math.abs(diffY)) {
+                    // Horizontal intent - Start dragging envelope
+                    if (!envelopeScreen.classList.contains('opened')) {
+                        if (e.target.closest('#envelope-screen')) handleDragStart(envelopeStartX);
+                    } else if (envelopeStartX < window.innerWidth * 0.15) {
+                        handleDragStart(envelopeStartX);
+                    }
+                    
+                    if (isDraggingEnvelope) {
+                        if (e.cancelable) e.preventDefault();
+                    }
+                } else {
+                    // Vertical intent - Let the browser handle scrolling
+                    isVerticalScrolling = true;
+                }
+            }
+        } else if (isDraggingEnvelope) {
+            // Already dragging horizontally
+            handleDragMove(touch.clientX, e);
+            if (e.cancelable) e.preventDefault();
+        }
     }, { passive: false });
 
     document.addEventListener('touchend', handleDragEnd);
