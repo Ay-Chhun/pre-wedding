@@ -120,6 +120,11 @@ body {
     -webkit-touch-callout: none;
 }
 
+/* Digital Gift Section Control (Blocked by default, shown on wedding date) */
+#digital-gift-card {
+    display: none !important;
+}
+
 /* Disable drag and long-press save on all images */
 img {
     -webkit-user-drag: none;

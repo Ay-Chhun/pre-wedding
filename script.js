@@ -247,6 +247,12 @@ const countdownTimer = setInterval(function () {
         // Hide seconds when expired to match request or use as placeholder
         document.getElementById("seconds").parentElement.style.display = 'none';
 
+        // Show Digital Gift Section once countdown is finished (Wedding Date reached)
+        const giftCard = document.getElementById('digital-gift-card');
+        if (giftCard) {
+            giftCard.style.setProperty('display', 'flex', 'important');
+        }
+
         // For expired, we show simple Y M D logic - note: this is a rough approximation 
         // since 'distance' is just ms. For precise YMD we'd need Date diffing.
         // But following the requested layout:
