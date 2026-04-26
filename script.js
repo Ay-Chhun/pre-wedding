@@ -46,10 +46,10 @@ if (envelopeScreen) {
 
     function closeEnvelope() {
         if (!envelopeScreen.classList.contains('opened')) return;
-        
+
         envelopeScreen.classList.remove('opened');
         document.body.style.overflow = 'hidden'; // Lock scroll again
-        
+
         // Restart the falling hearts on the envelope!
         if (typeof startEnvelopeHearts === 'function') {
             startEnvelopeHearts();
@@ -66,7 +66,7 @@ if (envelopeScreen) {
         envelopeStartX = x;
         isDraggingEnvelope = true;
         envelopeScreen.classList.add('is-dragging');
-        
+
         // Record the current rotation based on state
         initialRotation = envelopeScreen.classList.contains('opened') ? -110 : 0;
     }
@@ -74,7 +74,7 @@ if (envelopeScreen) {
     function handleDragMove(x, e) {
         if (!isDraggingEnvelope) return;
 
-        let diffX = x - envelopeStartX; 
+        let diffX = x - envelopeStartX;
         currentTranslateX = diffX;
 
         // Calculate rotation based on drag distance
@@ -88,12 +88,12 @@ if (envelopeScreen) {
 
         // Apply 3D rotation and ensure it overrides transitions during drag
         envelopeScreen.style.transform = `perspective(1500px) translateX(-50%) rotateY(${finalAngle}deg)`;
-        
+
         // If it was already fully opened, make sure opacity is correctly restored as we pull it back
         if (envelopeScreen.classList.contains('opened')) {
             let progress = Math.abs(finalAngle) / 110; // 1 = fully open, 0 = closed
             envelopeScreen.style.opacity = 1 - progress; // Fade in as we close it
-            
+
             // Critical: If we pull it from fully open, we need to re-enable interaction with the cover itself
             if (finalAngle > -90) envelopeScreen.style.pointerEvents = 'auto';
         }
@@ -104,7 +104,7 @@ if (envelopeScreen) {
     function handleDragEnd() {
         if (!isDraggingEnvelope) return;
         isDraggingEnvelope = false;
-        
+
         envelopeScreen.classList.remove('is-dragging');
         envelopeScreen.style.transform = ''; // Clear inline styles so css transitions takeover
         envelopeScreen.style.opacity = '';
@@ -115,14 +115,14 @@ if (envelopeScreen) {
             if (currentTranslateX < -70) {
                 openEnvelope();
             }
-        } 
+        }
         // If already opened, check if swipe was far enough to CLOSE
         else {
             if (currentTranslateX > 70) {
                 closeEnvelope();
             }
         }
-        
+
         currentTranslateX = 0;
     }
 
@@ -143,7 +143,7 @@ if (envelopeScreen) {
             if (e.target.closest('#envelope-screen')) {
                 // We don't call handleDragStart yet, we wait for movement to see direction
             }
-        } 
+        }
         // If opened, start drag if touching from the left 15% of the screen (the "pull" area)
         else {
             if (touch.clientX < window.innerWidth * 0.15) {
@@ -168,7 +168,7 @@ if (envelopeScreen) {
                     } else if (envelopeStartX < window.innerWidth * 0.15) {
                         handleDragStart(envelopeStartX);
                     }
-                    
+
                     if (isDraggingEnvelope) {
                         if (e.cancelable) e.preventDefault();
                     }
@@ -247,11 +247,6 @@ const countdownTimer = setInterval(function () {
         // Hide seconds when expired to match request or use as placeholder
         document.getElementById("seconds").parentElement.style.display = 'none';
 
-        // Show Digital Gift Section once countdown is finished (Wedding Date reached)
-        const giftCard = document.getElementById('digital-gift-card');
-        if (giftCard) {
-            giftCard.style.setProperty('display', 'flex', 'important');
-        }
 
         // For expired, we show simple Y M D logic - note: this is a rough approximation 
         // since 'distance' is just ms. For precise YMD we'd need Date diffing.
@@ -710,29 +705,6 @@ if (backToTopBtn) {
     });
 }
 
-// QR Code Tab Switching
-document.addEventListener('DOMContentLoaded', () => {
-    const qrTabs = document.querySelectorAll('.qr-tab');
-    const qrContents = document.querySelectorAll('.qr-content');
-
-    qrTabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const target = tab.getAttribute('data-target');
-
-            // Update tabs
-            qrTabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
-
-            // Update content
-            qrContents.forEach(content => {
-                content.classList.remove('active');
-                if (content.id === `qr-${target}`) {
-                    content.classList.add('active');
-                }
-            });
-        });
-    });
-});
 
 // Floating Hearts on Load
 document.addEventListener("DOMContentLoaded", function () {
@@ -1290,19 +1262,19 @@ function createTrailHeart(x, y) {
     const size = Math.random() * 0.8 + 0.4;
     const colors = ['#ff6b98', '#EDD19C', '#ffffff', '#ff9a9e'];
     const color = colors[Math.floor(Math.random() * colors.length)];
-    
+
     particle.innerHTML = `<span style="color: ${color}; font-size: ${size}rem; text-shadow: 0 0 10px ${color}">❤</span>`;
     particle.style.left = x + 'px';
     particle.style.top = y + 'px';
-    
+
     const tx = (Math.random() * 80 - 40);
     const ty = (Math.random() * 80 - 40) - 50; // Fly upwards a bit
     const rot = Math.random() * 180 - 90;
-    
+
     particle.style.setProperty('--tx', tx + 'px');
     particle.style.setProperty('--ty', ty + 'px');
     particle.style.setProperty('--rot', rot + 'deg');
-    
+
     document.body.appendChild(particle);
     setTimeout(() => particle.remove(), 1000);
 }

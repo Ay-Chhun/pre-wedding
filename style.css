@@ -808,8 +808,10 @@ img {
     background: inherit;
     background-size: cover;
     background-position: center;
-    filter: blur(10px) brightness(1.1); /* Simplified for faster rendering on iPhone */
-    transform: scale(1.15) translateZ(0); /* Force 3D composition layer */
+    filter: blur(10px) brightness(1.1);
+    /* Simplified for faster rendering on iPhone */
+    transform: scale(1.15) translateZ(0);
+    /* Force 3D composition layer */
     -webkit-transform: scale(1.15) translateZ(0);
     z-index: 1;
     opacity: 0.85;
@@ -865,7 +867,7 @@ img {
     left: -100%;
     width: 50%;
     height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.3), transparent);
     transform: skewX(-25deg);
     z-index: 4;
     transition: none;
@@ -887,7 +889,8 @@ img {
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
     /* Sync image reveal with parent for total consistency */
     opacity: 0;
-    transition: opacity 0.5s ease-out 0.1s; /* 0.1s delay ensuring background is always ready */
+    transition: opacity 0.5s ease-out 0.1s;
+    /* 0.1s delay ensuring background is always ready */
     will-change: opacity;
 }
 
@@ -1005,6 +1008,7 @@ img {
         transform: translateY(40px) scale(0.92);
         /* Clean and Fast: No Blur during animation! */
     }
+
     100% {
         opacity: 1;
         transform: translateY(0) scale(1);
@@ -1365,7 +1369,9 @@ img {
 }
 
 @keyframes goldShine {
-    to { background-position: 200% center; }
+    to {
+        background-position: 200% center;
+    }
 }
 
 .sub-title {
@@ -1704,150 +1710,8 @@ img {
     }
 }
 
-/* --- Digital Gift Section --- */
-#digital-gift-card {
-    border: none !important;
-    outline: none !important;
-    padding-top: 40px;
-    padding-bottom: 80px;
-    text-align: center;
-    position: relative;
-    z-index: 1;
-}
 
-.gift-text {
-    font-family: var(--body-font);
-    font-size: 1rem;
-    margin-bottom: 20px;
-    padding: 0 15px;
-    line-height: 1.6;
-}
 
-.gift-btn {
-    background: var(--deep-pink);
-    color: #fff;
-    padding: 12px 30px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-family: var(--khmer-header-font);
-    font-size: 1rem;
-    display: inline-block;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(212, 20, 90, 0.3);
-    transition: transform 0.2s;
-    border: 2px solid transparent;
-}
-
-.gift-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(212, 20, 90, 0.4);
-}
-
-.gift-btn:active {
-    transform: translateY(1px);
-}
-
-.qr-tabs {
-    display: inline-flex;
-    justify-content: center;
-    background: #fff;
-    padding: 4px;
-    border-radius: 50px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    margin-bottom: 25px;
-    position: relative;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.qr-tab {
-    padding: 8px 30px;
-    border-radius: 50px;
-    border: none;
-    background: transparent;
-    color: #666;
-    font-family: var(--khmer-body-font);
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    z-index: 2;
-    font-weight: 500;
-}
-
-.qr-tab.active {
-    color: #fff;
-    background: linear-gradient(135deg, #0061ff, #60efff);
-    /* Default blue gradient from reference */
-}
-
-/* Adjusting to match wedding theme colors instead of blue if preferred */
-.qr-tab.active {
-    background: linear-gradient(135deg, var(--deep-pink), #ff85a2);
-    box-shadow: 0 4px 12px rgba(214, 51, 132, 0.3);
-}
-
-.qr-content {
-    display: none;
-    animation: fadeIn 0.4s ease;
-}
-
-.qr-content.active {
-    display: block;
-}
-
-.separator {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 10px 0 25px;
-    color: var(--text-color);
-    font-family: var(--body-font);
-    font-size: 0.9rem;
-    opacity: 0.7;
-}
-
-.separator::before,
-.separator::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--gold);
-    margin: 0 15px;
-    max-width: 100px;
-}
-
-.qr-container {
-    margin-top: 10px;
-}
-
-.qr-code-img {
-    width: 200px;
-    height: 200px;
-    border-radius: 12px;
-    border: 2px solid var(--gold);
-    padding: 5px;
-    background: #fff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
-
-.account-info {
-    margin-top: 20px;
-    font-family: var(--body-font);
-    color: var(--text-color);
-}
-
-.account-label {
-    font-size: 0.9rem;
-    margin-bottom: 5px;
-}
-
-.account-name {
-    font-weight: bold;
-    font-size: 1.3rem;
-    color: var(--deep-pink);
-    font-family: 'Times New Roman', serif;
-    letter-spacing: 1px;
-}
 
 
 
@@ -2518,17 +2382,20 @@ img {
     max-width: 500px;
     height: 100vh;
     background: #f7f3ed url('assets/invit-bg.png') no-repeat center center;
-    background-size: cover; /* Cover ensures it's not stretched! */
+    background-size: cover;
+    /* Cover ensures it's not stretched! */
     z-index: 99999;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.8s ease;
-    
+
     /* 3D Book Shadows */
     border-left: 2px solid #7a5421;
-    box-shadow: inset 50px 0 60px -25px rgba(0,0,0,0.7), /* Deep crease where cover meets the spine */
-                15px 0 40px rgba(0,0,0,0.5); /* Outer drop shadow giving it physical thickness */
+    box-shadow: inset 50px 0 60px -25px rgba(0, 0, 0, 0.7),
+        /* Deep crease where cover meets the spine */
+        15px 0 40px rgba(0, 0, 0, 0.5);
+    /* Outer drop shadow giving it physical thickness */
 }
 
 /* Premium Pink Velvet Book Spine Binding */
@@ -2540,8 +2407,8 @@ img {
     width: 28px;
     height: 100%;
     background: linear-gradient(90deg, #9b2a5a 0%, #e85596 35%, #ff8dbf 50%, #e85596 65%, #9b2a5a 100%);
-    border-right: 1px solid rgba(255,255,255,0.4);
-    box-shadow: inset -3px 0 6px rgba(0,0,0,0.4), 6px 0 15px rgba(0,0,0,0.5);
+    border-right: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: inset -3px 0 6px rgba(0, 0, 0, 0.4), 6px 0 15px rgba(0, 0, 0, 0.5);
     z-index: 0;
 }
 
@@ -2558,20 +2425,25 @@ img {
 .envelope-content {
     text-align: center;
     padding: 20px;
-    background: transparent; /* Removed the clunky white box! */
+    background: transparent;
+    /* Removed the clunky white box! */
     box-shadow: none;
     border: none;
     width: 100%;
-    z-index: 2; /* Sit firmly above the metallic spine */
+    z-index: 2;
+    /* Sit firmly above the metallic spine */
 }
 
 .envelope-title {
     font-family: var(--khmer-header-font);
-    font-size: 1.8rem; /* Scaled down slightly to fit better */
-    color: var(--deep-pink); /* Matching the original vibe */
+    font-size: 1.8rem;
+    /* Scaled down slightly to fit better */
+    color: var(--deep-pink);
+    /* Matching the original vibe */
     margin-bottom: 20px;
     letter-spacing: 1px;
-    text-shadow: 0 0 15px rgba(255,255,255,0.9), 0 0 30px rgba(255,255,255,0.9); /* Bright white glow to stick out on the floral bg */
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.9), 0 0 30px rgba(255, 255, 255, 0.9);
+    /* Bright white glow to stick out on the floral bg */
 }
 
 .envelope-names {
@@ -2580,7 +2452,7 @@ img {
     font-weight: bold;
     color: var(--gold);
     margin-bottom: 40px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255,255,255,0.9);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 0 20px rgba(255, 255, 255, 0.9);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -2588,7 +2460,7 @@ img {
 }
 
 /* Hide the underlying text on the cover card while the envelope is closed (so it doesn't blur through) */
-#envelope-screen:not(.opened) ~ #cover-card .cover-content {
+#envelope-screen:not(.opened)~#cover-card .cover-content {
     opacity: 0;
     pointer-events: none;
 }
@@ -2602,7 +2474,8 @@ img {
     font-size: 1.1rem;
     margin-bottom: 12px;
     font-weight: bold;
-    color: var(--deep-pink); /* Romantic pink that matches the title */
+    color: var(--deep-pink);
+    /* Romantic pink that matches the title */
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 255, 255, 0.9);
     letter-spacing: 1px;
     opacity: 0.9;
@@ -2610,18 +2483,26 @@ img {
 
 .swipe-arrow {
     font-size: 1.8rem;
-    color: var(--deep-pink); /* Matched pink arrow */
+    color: var(--deep-pink);
+    /* Matched pink arrow */
     animation: bounceLeft 1.5s infinite;
     filter: drop-shadow(0 2px 5px rgba(255, 255, 255, 0.8));
 }
 
 @keyframes bounceLeft {
-    0%, 20%, 50%, 80%, 100% {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
         transform: translateX(0);
     }
+
     40% {
         transform: translateX(-15px);
     }
+
     60% {
         transform: translateX(-7px);
     }
@@ -2633,9 +2514,20 @@ img {
         transform: translateY(-10vh) translateX(0) rotate(-15deg);
         opacity: 0;
     }
-    15% { opacity: 0.6; }
-    50% { transform: translateY(50vh) translateX(20px) rotate(15deg); opacity: 0.6; }
-    85% { opacity: 0.6; }
+
+    15% {
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: translateY(50vh) translateX(20px) rotate(15deg);
+        opacity: 0.6;
+    }
+
+    85% {
+        opacity: 0.6;
+    }
+
     100% {
         transform: translateY(110vh) translateX(-20px) rotate(-15deg);
         opacity: 0;
@@ -2646,6 +2538,26 @@ img {
     position: absolute;
     top: 0;
     pointer-events: none;
-    z-index: 1; /* Below text, above background */
+    z-index: 1;
+    /* Below text, above background */
+    filter: drop-shadow(0 2px 4px rgba(224, 75, 139, 0.4));
+}
+
+85% {
+    opacity: 0.6;
+}
+
+100% {
+    transform: translateY(110vh) translateX(-20px) rotate(-15deg);
+    opacity: 0;
+}
+}
+
+.env-small-heart {
+    position: absolute;
+    top: 0;
+    pointer-events: none;
+    z-index: 1;
+    /* Below text, above background */
     filter: drop-shadow(0 2px 4px rgba(224, 75, 139, 0.4));
 }
