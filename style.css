@@ -122,7 +122,7 @@ body {
 
 /* Digital Gift Section Control (Blocked by default, shown on wedding date) */
 #digital-gift-card {
-    display: none !important;
+    /* Always show if user is adding/styling it */
 }
 
 /* Disable drag and long-press save on all images */
@@ -1710,8 +1710,131 @@ img {
     }
 }
 
+/* --- Digital Gift Section --- */
+#digital-gift-card {
+    border: none !important;
+    outline: none !important;
+    padding-top: 40px;
+    padding-bottom: 80px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    display: block !important; /* Force block to prevent flex row stacking */
+}
 
+.floral-divider {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+}
 
+.floral-divider i {
+    filter: drop-shadow(0 2px 4px rgba(206, 157, 77, 0.3));
+}
+
+.gift-text {
+    font-family: var(--khmer-body-font);
+    font-size: 1rem;
+    margin-bottom: 25px;
+    padding: 0 20px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.qr-tabs {
+    display: inline-flex;
+    justify-content: center;
+    background: #fff;
+    padding: 5px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.qr-tab {
+    padding: 10px 30px;
+    border-radius: 50px;
+    border: none;
+    background: transparent;
+    color: #666;
+    font-family: var(--khmer-body-font);
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.qr-tab.active {
+    background: linear-gradient(135deg, var(--gold), #edd19c);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(206, 157, 77, 0.4);
+}
+
+.qr-premium-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.qr-content {
+    display: none;
+    animation: fadeIn 0.5s ease;
+    width: 100%;
+}
+
+.qr-content.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.qr-frame {
+    background: #fff;
+    border: 4px solid var(--gold);
+    padding: 15px;
+    border-radius: 20px;
+    display: inline-block;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.qr-frame:hover {
+    transform: scale(1.02);
+}
+
+.qr-code-img {
+    width: 220px;
+    height: 220px;
+    display: block;
+    border-radius: 10px;
+}
+
+.account-info {
+    text-align: center;
+    margin-top: 5px;
+}
+
+.account-label {
+    font-family: var(--khmer-body-font);
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.account-name {
+    font-family: 'Times New Roman', serif;
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: var(--deep-pink);
+    letter-spacing: 1.5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
 
 
 

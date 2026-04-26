@@ -446,15 +446,13 @@
             </div>
             <div class="gallery-item scroll-animate" onclick="openLightbox(18)">
                 <img src="assets/gallery/RAK_5694.jpg" alt="Wedding Photo" loading="lazy" decoding="async">
-            </div>
-            <div class="gallery-item scroll-animate" onclick="openLightbox(19)">
-                <img src="assets/gallery/RAK_5793.jpg" alt="Wedding Photo" loading="lazy" decoding="async">
-            </div>
+                    </div>
         </div>
     </div>
 
-    <!-- Thank You Section -->
-    <div id="thank-you-card" class="card-container">
+
+        <!-- Thank You Section -->
+        <div id="thank-you-card" class="card-container">
             <h2 class="main-title program-header scroll-animate" style="font-size: 1.6rem; margin-bottom: 20px;">
                 សេចក្ដីថ្លែងអំណរគុណ</h2>
             <div class="thank-you-content scroll-animate">
@@ -471,7 +469,44 @@
             </div>
         </div>
 
+        <div id="digital-gift-card" class="card-container">
+            <div class="floral-divider scroll-animate">
+                <i class="fa-solid fa-gift" style="font-size: 1.5rem; color: var(--gold); margin-bottom: 10px;"></i>
+            </div>
+            <h2 class="main-title program-header scroll-animate" style="font-size: 1.6rem; margin-bottom: 20px;">
+                ចំណងដៃឌីជីថល</h2>
 
+            <p class="gift-text scroll-animate">
+                ប្រសិនបើលោកអ្នកមានបំណងចងចំណងដៃតាមរយៈឌីជីថល លោកអ្នកអាចស្កែន QR Code ខាងក្រោមនេះបាន៖
+            </p>
+
+            <div class="qr-container scroll-animate">
+                <div class="qr-tabs">
+                    <button class="qr-tab active" data-target="us">ABA USD</button>
+                    <button class="qr-tab" data-target="kh">ABA KHR</button>
+                </div>
+                <div class="qr-premium-wrapper">
+                    <div class="qr-content active" id="qr-us">
+                        <div class="qr-frame">
+                            <img src="assets/usd.png" alt="USD QR Code" class="qr-code-img">
+                        </div>
+                        <div class="account-info">
+                            <p class="account-label">ម្ចាស់គណនី</p>
+                            <p class="account-name">AY C. & MENG M.</p>
+                        </div>
+                    </div>
+                    <div class="qr-content" id="qr-kh">
+                        <div class="qr-frame">
+                            <img src="assets/khr.png" alt="KHR QR Code" class="qr-code-img">
+                        </div>
+                        <div class="account-info">
+                            <p class="account-label">ម្ចាស់គណនី</p>
+                            <p class="account-name">AY C. & MENG M.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Lightbox -->
         <div id="lightbox" class="lightbox-overlay">

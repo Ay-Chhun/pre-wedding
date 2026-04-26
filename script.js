@@ -705,6 +705,29 @@ if (backToTopBtn) {
     });
 }
 
+// QR Code Tab Switching
+document.addEventListener('DOMContentLoaded', () => {
+    const qrTabs = document.querySelectorAll('.qr-tab');
+    const qrContents = document.querySelectorAll('.qr-content');
+
+    qrTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const target = tab.getAttribute('data-target');
+
+            // Update tabs
+            qrTabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            // Update content
+            qrContents.forEach(content => {
+                content.classList.remove('active');
+                if (content.id === `qr-${target}`) {
+                    content.classList.add('active');
+                }
+            });
+        });
+    });
+});
 
 // Floating Hearts on Load
 document.addEventListener("DOMContentLoaded", function () {
